@@ -11,6 +11,7 @@
     ['Diseñando Ando', 'Diseño de Sistemas de Información (UML, GRASP, GoF)', 'disenando-ando'],
     ['Economizar', 'Economía (micro y macro con gráficas)', 'economizar'],
     ['Modulando Ando', 'Comunicación de Datos (señales, Shannon, errores, modulación)', 'modulando-ando'],
+    ['Probando Ando', 'Probabilidad y Estadística (Bayes, distribuciones, intervalos, tests)', 'probando-ando'],
   ];
   const main = $('#main');
   const toc = $('#toc');
