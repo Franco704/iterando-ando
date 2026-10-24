@@ -13,6 +13,14 @@ No necesita instalación: es HTML, CSS y JavaScript. Abrí `index.html`. El prog
 
 Pruebas: `node tests/num.test.js` (métodos numéricos contra los resultados de clase) y `node tests/content.test.js` (estructura del contenido).
 
+## También probá
+
+- [Backeando Ando](https://franco704.github.io/backeando-ando/) ([repositorio](https://github.com/Franco704/backeando-ando))
+- [Fronteando Ando](https://franco704.github.io/fronteando-ando/) ([repositorio](https://github.com/Franco704/fronteando-ando))
+- [Diseñando Ando](https://franco704.github.io/disenando-ando/) ([repositorio](https://github.com/Franco704/disenando-ando))
+- [Economizar](https://franco704.github.io/economizar/) ([repositorio](https://github.com/Franco704/economizar))
+- [Modulando Ando](https://franco704.github.io/modulando-ando/) ([repositorio](https://github.com/Franco704/modulando-ando))
+
 ## Agradecimientos
 
 A **Mateo Rusconi**, autor original de las animaciones que esta guía hereda de Backeando Ando: la pantalla de entrada a cada tema, los glifos animados de las lecciones y los microefectos de los cuestionarios vienen de su "Laboratorio Frontend DSW".
