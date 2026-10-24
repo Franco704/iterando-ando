@@ -128,5 +128,55 @@
       ],
       sources: [{ title: 'Apunte: Series de Fourier de funciones pares e impares', ref: 'Cátedra de Matemática Superior', points: ['Ejemplo 2: x² (par), ejemplo 3: x (impar).'] }],
     },
+
+    {
+      id: 'fourier-ingenieria',
+      module: 'u7',
+      title: 'A fondo: ortogonalidad, dominio de la frecuencia y para qué sirve',
+      keywords: 'fourier ingeniería aplicaciones señales armónicos frecuencia fundamental ortogonalidad deducción coeficientes dominio del tiempo frecuencia espectro amplitud fase dirichlet convergencia salto promedio gibbs forma compleja chapra',
+      tldr: 'Fourier escribe una señal periódica como suma de senos y cosenos de frecuencias <mark>múltiplos de la fundamental</mark> ω₀ = 2π/T. Los coeficientes salen de la <strong>ortogonalidad</strong>: al multiplicar por cos(mω₀t) e integrar en un período, todos los términos se anulan salvo uno. En ingeniería sirve para pasar del dominio del tiempo al de la frecuencia: ver qué armónicos tiene una señal, filtrarla, comprimirla o sintetizarla.',
+      goals: ['Explicar para qué se usa la serie de Fourier en ingeniería (pregunta fija del 2do parcial).', 'Deducir las fórmulas de los coeficientes con ortogonalidad.', 'Enunciar las condiciones de Dirichlet y a qué converge la serie en un salto.'],
+      body: `
+        <h2>¿Para qué se usa en ingeniería?</h2>
+        <p>El apunte de la cátedra: “en ingeniería se trabajan diferentes formas de señales tales como la sinusoidal, cuadrada y triangular. Las series de Fourier sirven en el procesamiento digital de señales, ya que nos permiten expresar una función periódica de tiempo como la suma infinita de senoides cuyas frecuencias están armónicamente relacionadas”.</p>
+        ${table(['Aplicación', 'Qué aporta Fourier'], [
+          ['Procesamiento de señales y telecomunicaciones', 'Separar una señal en sus componentes de frecuencia para filtrarla, transmitirla en una portadora o eliminar ruido'],
+          ['Generación de ondas', 'Sintetizar ondas de corriente o tensión superponiendo senoides de amplitud variable (osciladores)'],
+          ['Análisis armónico', 'Medir qué armónicos tiene una señal: distorsión en redes eléctricas, vibraciones en máquinas'],
+          ['Acústica, imagen y compresión de datos', 'Guardar solo los armónicos importantes (la idea detrás de MP3 y JPEG)'],
+          ['Ecuaciones diferenciales', 'Resolver problemas de calor y vibraciones con entradas periódicas (así nació la serie, en el estudio del flujo de calor)'],
+        ])}
+        <h2>Frecuencia fundamental y armónicos</h2>
+        <p>Chapra (sección 19.2) escribe la serie de una función de período T como</p>
+        ${eq('f(t) = a₀ + Σ<sub>k=1</sub><sup>∞</sup> [a<sub>k</sub> cos(kω₀t) + b<sub>k</sub> sen(kω₀t)], &nbsp; ω₀ = 2π/T', 'Chapra, ec. 19.17')}
+        <p>ω₀ es la <strong>frecuencia fundamental</strong> y 2ω₀, 3ω₀… los <strong>armónicos</strong>. Con período 2L, ω₀ = π/L y la serie es la de la cátedra. Ojo con la notación: en Chapra a₀ ya es el valor medio; en la cátedra el valor medio es a₀/2 (con a₀ = (1/L)∫f). Dan la misma serie.</p>
+        <h2>¿De dónde salen las fórmulas? Ortogonalidad</h2>
+        <p>Chapra (cuadro 19.1) usa estas integrales sobre un período, válidas para enteros k ≠ g:</p>
+        ${eq('∫ sen(kω₀t) dt = ∫ cos(kω₀t) dt = 0; &nbsp; ∫ cos(kω₀t) sen(gω₀t) dt = 0; &nbsp; ∫ cos(kω₀t) cos(gω₀t) dt = ∫ sen(kω₀t) sen(gω₀t) dt = 0; &nbsp; ∫ cos²(kω₀t) dt = ∫ sen²(kω₀t) dt = T/2')}
+        <p>Para despejar a<sub>m</sub> se multiplica toda la serie por cos(mω₀t) y se integra en un período: <strong>todos</strong> los términos dan cero salvo a<sub>m</sub>·T/2. Queda a<sub>m</sub> = (2/T)∫ f(t) cos(mω₀t) dt; con T = 2L es el (1/L)∫ f cos(nπx/L) dx de la cátedra. Integrando la serie sin multiplicar, solo sobrevive a₀·T: el término constante es el <strong>valor medio</strong>. Senos y cosenos funcionan como ejes perpendiculares: cada coeficiente es la “proyección” de f sobre uno de ellos.</p>
+        <h2>Dominio del tiempo y dominio de la frecuencia</h2>
+        <p>Chapra (sección 19.3): una misma señal se puede mirar como f(t), la amplitud en cada instante (dominio del tiempo), o como la lista de amplitudes y fases de cada armónico (dominio de la frecuencia). Graficar la amplitud √(a<sub>k</sub>² + b<sub>k</sub>²) contra kω₀ da el <strong>espectro de líneas</strong>.</p>
+        ${h.chart({ x: [0, 8], y: [0, 2.2], xl: 'k', yl: 'amplitud', ticks: { x: [1, 2, 3, 4, 5, 6, 7], y: [0.5, 1, 1.5, 2] }, segs: [1, 3, 5, 7].map((k) => ({ from: [k, 0], to: [k, 6 / (k * PI)], cls: 'c-root' })), points: [{ x: 0.08, y: 1.5, cls: 'c-tan', label: 'a₀/2 = 3/2', pos: 'e' }, ...[1, 3, 5, 7].map((k) => ({ x: k, y: 6 / (k * PI), cls: 'c-root', r: 4 }))] }, 'Espectro de la función 0 / 3 del 2do parcial: valor medio 3/2 y solo armónicos impares de amplitud 6/(kπ). Los pares no aparecen.')}
+        <h2>Convergencia: condiciones de Dirichlet</h2>
+        ${def('Condiciones de Dirichlet', '1) f(x) está definida y tiene un valor único, salvo en un número finito de puntos, en (−L, L). 2) f(x) es periódica con período 2L. 3) f(x) y f′(x) son continuas por intervalos en (−L, L). Entonces la serie de Fourier converge a f(x) en los puntos de continuidad y, en los puntos de discontinuidad, al promedio [f(x⁺) + f(x⁻)]/2.', 'Apunte de la cátedra, Series de Fourier.')}
+        <p>Chapra lo resume en una nota al pie: “la función periódica tiene un número finito de máximos y mínimos y un número finito de saltos discontinuos. En general, todas las funciones periódicas obtenidas físicamente satisfacen tales condiciones”. Son condiciones <strong>suficientes</strong>: si se cumplen, la serie converge. En los saltos la suma parcial muestra un sobrepico de ≈ 9 % que no desaparece al sumar más términos, solo se angosta (fenómeno de Gibbs).</p>
+        ${note('Respuesta modelo (2P, los tres temas): “La serie de Fourier se usa en ingeniería para representar señales periódicas (sinusoidales, cuadradas, triangulares) como suma de senos y cosenos de frecuencias armónicas: procesamiento digital de señales, telecomunicaciones, generación de ondas de tensión o corriente, análisis armónico de una señal, reforzamiento de señales, acústica, imágenes y compresión de datos. Para que la serie converja a f deben cumplirse las condiciones de Dirichlet: f definida y univaluada en (−L, L) salvo en un número finito de puntos, periódica de período 2L, y f y f′ continuas por intervalos en (−L, L). En los saltos la serie converge al promedio de los límites laterales.”', 'exam')}
+        <h2>Sugerencia del parcial: graficar y mirar la paridad</h2>
+        <p>Para f = 0 en (−π, 0) y 3 en (0, π), f no es par ni impar, pero <strong>f − 3/2</strong> vale −3/2 y +3/2: es impar. Entonces f = 3/2 + (función impar): a₀/2 = 3/2, todos los aₙ = 0 y solo hay que calcular bₙ. Así se anticipa el resultado antes de integrar, que es lo que pide la sugerencia del enunciado.</p>
+        ${lab(0)}`,
+      labs: [{ type: 'fourier', fn: 'step3', n: 5, title: 'Del tiempo a la frecuencia', intro: 'Las barras son el dominio de la frecuencia y la curva, el del tiempo. Subí N: cada armónico nuevo agrega una barra y corrige la forma de la curva.' }],
+      quiz: [
+        { q: 'Si una señal tiene período T = 0,02 s, su frecuencia fundamental angular es…', o: ['50 rad/s', '100π rad/s', '0,02 rad/s', '2π rad/s'], a: 1, e: 'ω₀ = 2π/T = 100π.' },
+        { q: 'Las fórmulas de aₙ y bₙ se deducen gracias a…', o: ['la regla de L’Hôpital', 'la ortogonalidad de senos y cosenos en un período', 'las fracciones simples', 'la serie de Taylor'], a: 1, e: 'Chapra, cuadro 19.1.' },
+        { q: 'El término constante de la serie representa…', o: ['la amplitud del primer armónico', 'el valor medio de f en un período', 'la fase', 'el período'], a: 1, e: 'Integrar un período anula todos los senos y cosenos.' },
+        { q: 'En un punto de salto, la serie de Fourier converge a…', o: ['el valor por izquierda', 'el valor por derecha', 'el promedio de los límites laterales', 'no converge'], a: 2, e: 'Condiciones de Dirichlet.' },
+        { q: 'El espectro de líneas muestra…', o: ['f(t) en el tiempo', 'la amplitud de cada armónico contra la frecuencia', 'los polos de la función', 'el error de la serie'], a: 1, e: 'Dominio de la frecuencia (Chapra 19.3).' },
+        { q: 'f = 0 en (−π, 0), 5 en (0, π). Sin integrar se sabe que…', o: ['bₙ = 0', 'aₙ = 0 para n ≥ 1, porque f − 5/2 es impar', 'a₀ = 0', 'la serie solo tiene cosenos'], a: 1, e: 'f = 5/2 + (impar).' },
+      ],
+      sources: [
+        { title: 'Métodos numéricos para ingenieros', ref: 'Chapra y Canale, 5ª ed., secciones 19.1 a 19.3', points: ['Serie de Fourier continua, frecuencia fundamental y armónicos (ec. 19.17).', 'Cuadro 19.1: deducción de los coeficientes por ortogonalidad.', 'Nota sobre las condiciones de Dirichlet.', 'Dominios del tiempo y de la frecuencia; espectro de líneas.'] },
+        { title: 'Apunte: Series de Fourier', ref: 'Cátedra de Matemática Superior', points: ['Aplicaciones en ingeniería: procesamiento de señales, generación de ondas, análisis armónico, reforzamiento de señales.', 'Condiciones de Dirichlet.'] },
+      ],
+    },
   );
 })();

@@ -92,5 +92,67 @@
       ],
       sources: [{ title: 'Programa analítico 2026', ref: 'Unidad 6', points: ['6.6 Método de regresión de mínimos cuadrados cuadrático.'] }, { title: 'Métodos Numéricos para Ingenieros', ref: 'Chapra y Canale, sección 17.2', points: ['Regresión polinomial.'] }],
     },
+
+    {
+      id: 'regresion-teoria',
+      module: 'u6r',
+      title: 'A fondo: por qué mínimos cuadrados, error de los datos y del modelo',
+      keywords: 'ajuste de curvas cuándo regresión datos confiables ruido por qué mínimos cuadrados criterios minimax residuos error antes después St Sr sy syx coeficiente determinación modelo adecuado linealización exponencial potencia supuestos chapra',
+      tldr: 'La regresión se usa cuando los datos <mark>tienen error</mark> y se quiere su tendencia, no pasar por cada punto. Mínimos cuadrados minimiza S<sub>r</sub> = Σ e<sub>i</sub>² porque los otros criterios fallan (los residuos se cancelan, no hay recta única o pesa demasiado un punto raro). El error <strong>antes</strong> de la regresión es S<sub>t</sub> (alrededor de la media) y el de <strong>después</strong>, S<sub>r</sub> (alrededor de la recta): si s<sub>y/x</sub> &lt; s<sub>y</sub> el modelo es adecuado y r² dice cuánto.',
+      goals: ['Responder cuándo se usa el ajuste de curvas y qué significa ajustar una recta.', 'Justificar por qué mínimos cuadrados y no otro criterio.', 'Distinguir error de los datos y error del modelo; decidir si el modelo es adecuado y qué hacer si no lo es.'],
+      body: `
+        <h2>¿Cuándo se ajusta una curva por regresión?</h2>
+        <p>Chapra (PT5.1): “si los datos exhiben un grado significativo de error o ruido, la estrategia será obtener una sola curva que represente la tendencia general de los datos. Como cualquier dato individual puede ser incorrecto, no se busca intersecar todos los puntos”. Es lo opuesto a la interpolación, que se usa con datos precisos. Además del ajuste, la regresión sirve para <strong>predecir</strong> (estimar y para otros x) y para <strong>probar hipótesis</strong>: comparar un modelo teórico con mediciones.</p>
+        ${note('V o F del 2P 2025 A: “Los datos en regresión lineal no son confiables”. <strong>Verdadero</strong>, en el sentido del libro: la regresión se aplica a datos con error o ruido (mediciones experimentales), y por eso no se obliga a la recta a pasar por cada punto. Si los datos fueran exactos, se interpolaría.', 'exam')}
+        <h2>¿Qué significa ajustar por una línea recta?</h2>
+        ${eq('y = a₀ + a₁x + e', 'Modelo lineal (Chapra, ec. 17.1)')}
+        <p>Encontrar la pendiente a₁ y la ordenada al origen a₀ de la recta que mejor representa la tendencia de los datos, aceptando que cada dato se separa de ella un residuo e<sub>i</sub> = y<sub>i</sub> − (a₀ + a₁x<sub>i</sub>). “Mejor” necesita un criterio.</p>
+        <h2>¿Por qué mínimos cuadrados y no otro criterio?</h2>
+        ${table(['Criterio', 'Problema (Chapra, sección 17.1.1, figura 17.2)'], [
+          ['Minimizar Σ e<sub>i</sub>', 'Los residuos positivos y negativos se cancelan: cualquier recta que pase por el punto medio da suma cero'],
+          ['Minimizar Σ |e<sub>i</sub>|', 'No da una recta única: muchas rectas logran el mismo mínimo'],
+          ['Minimax: minimizar el mayor |e<sub>i</sub>|', 'Le da excesiva influencia a un solo punto con mucho error'],
+          ['<b>Minimizar S<sub>r</sub> = Σ e<sub>i</sub>²</b>', '<b>Supera las tres deficiencias</b>: no hay cancelación, la recta es única y se obtiene con dos ecuaciones lineales (las normales) al derivar e igualar a cero'],
+        ])}
+        <p>Además, si se cumplen los supuestos estadísticos (Chapra 17.1.6: las x se conocen sin error, las y son independientes, con la misma varianza y distribuidas normalmente), mínimos cuadrados da las mejores estimaciones posibles de a₀ y a₁.</p>
+        <h2>Error de los datos y error del modelo</h2>
+        ${table(['', 'Antes de la regresión (error de los datos)', 'Después de la regresión (error del modelo)'], [
+          ['Suma de cuadrados', 'S<sub>t</sub> = Σ (y<sub>i</sub> − ȳ)²: dispersión alrededor de la media', 'S<sub>r</sub> = Σ (y<sub>i</sub> − a₀ − a₁x<sub>i</sub>)²: dispersión alrededor de la recta'],
+          ['Desviación', 's<sub>y</sub> = √(S<sub>t</sub>/(n − 1)), desviación estándar', 's<sub>y/x</sub> = √(S<sub>r</sub>/(n − 2)), error estándar del estimado'],
+          ['Qué mide', 'Cuánto varían los datos si se los describe solo con su promedio', 'Cuánto se separan los datos de lo que predice el modelo'],
+        ])}
+        <p>Chapra (sección 17.1.3) llama a S<sub>t</sub> “el error residual asociado con la variable dependiente antes de la regresión” y a S<sub>r</sub> el que “queda después de la regresión”. La diferencia S<sub>t</sub> − S<sub>r</sub> es la mejora por usar la recta en lugar del promedio; normalizada da el <strong>coeficiente de determinación</strong>:</p>
+        ${eq(`r² = ${frac('S<sub>t</sub> − S<sub>r</sub>', 'S<sub>t</sub>')}`, 'Chapra, ec. 17.10')}
+        <h2>¿Cómo se sabe si el modelo es adecuado y cuánto?</h2>
+        <ol>
+          <li><strong>Adecuado</strong>: si s<sub>y/x</sub> &lt; s<sub>y</sub>, la recta describe los datos mejor que el promedio (Chapra, ejemplo 17.2).</li>
+          <li><strong>Cuánto</strong>: r² es la fracción de la variabilidad original que explica el modelo. r² = 1 (S<sub>r</sub> = 0) es un ajuste perfecto; r² = 0 (S<sub>r</sub> = S<sub>t</sub>), ninguna mejora.</li>
+          <li><strong>Mirar el gráfico</strong>: Chapra advierte que “el solo hecho de que r sea cercana a 1 no necesariamente significa que el ajuste sea bueno”: se puede obtener un r alto con datos curvos. Si los residuos forman un patrón (todos positivos en los extremos y negativos en el medio, por ejemplo), la recta no es el modelo correcto.</li>
+        </ol>
+        ${note('Ejemplo del 2P tema B: S<sub>t</sub> = 220, s<sub>y</sub> = 6,06 (antes); S<sub>r</sub> = 2,71, s<sub>y/x</sub> = 0,74 (después). Como 0,74 &lt; 6,06 el modelo es adecuado, y r² = 0,988: la recta explica el 98,8 % de la variabilidad.', 'tip')}
+        <h2>Si el modelo no es adecuado, ¿qué hacer?</h2>
+        <p>Chapra (sección 17.1.5): “el primer paso en cualquier análisis de regresión deberá ser graficar e inspeccionar los datos”. Si la tendencia es curva:</p>
+        ${table(['Si los datos parecen…', 'Modelo', 'Se linealiza con', 'Y se ajusta una recta a'], [
+          ['crecer o decaer proporcional a sí mismos', 'y = a e<sup>bx</sup>', 'ln y = ln a + b x', '(x, ln y)'],
+          ['una potencia', 'y = a x<sup>b</sup>', 'log y = log a + b log x', '(log x, log y)'],
+          ['saturar', 'y = a x/(b + x)', '1/y = 1/a + (b/a)(1/x)', '(1/x, 1/y)'],
+          ['una curva sin forma conocida', 'polinomio y = a₀ + a₁x + a₂x²', 'regresión polinomial (sección 17.2)', 'tres ecuaciones normales'],
+        ])}
+        ${note('Respuesta modelo (2P 2025 A, ejercicio 3): “a) Se usa cuando los datos tienen error y se busca una función que muestre su tendencia general, sin pasar por cada punto. b) El error de los datos es la dispersión alrededor de la media, S<sub>t</sub> (s<sub>y</sub>); el error del modelo es la dispersión alrededor de la recta, S<sub>r</sub> (s<sub>y/x</sub>). c) El modelo es adecuado si s<sub>y/x</sub> &lt; s<sub>y</sub>, y r² = (S<sub>t</sub> − S<sub>r</sub>)/S<sub>t</sub> indica qué porcentaje de la variabilidad explica; conviene también graficar los residuos. d) Si no es adecuado, se prueba otro modelo: linealizar (exponencial, potencia) o regresión polinomial.”', 'exam')}
+        ${lab(0)}`,
+      labs: [{ type: 'regression', set: 'pb', deg: 1, title: 'Antes y después de la regresión', intro: 'Datos del 2P tema B. La línea punteada ȳ es el modelo “antes” (S_t mide los desvíos hasta ella); los segmentos rojos son los residuos “después” (S_r). Cambiá a la tabla e del TP 8 para ver residuos con patrón.' }],
+      quiz: [
+        { q: 'Minimizar Σ eᵢ (sin cuadrados) es un mal criterio porque…', o: ['da números muy grandes', 'los residuos positivos y negativos se cancelan', 'necesita derivadas', 'no se puede calcular'], a: 1, e: 'Cualquier recta por el punto medio da cero.' },
+        { q: 'El criterio minimax es inadecuado para regresión porque…', o: ['ignora los datos', 'le da excesiva influencia a un punto con mucho error', 'siempre da una recta horizontal', 'no tiene solución'], a: 1, e: 'Chapra 17.1.1, figura 17.2c.' },
+        { q: 'El error “antes de la regresión” es…', o: ['S_r', 'S_t, la dispersión alrededor de la media', 'r²', 'a₁'], a: 1, e: 'S_t = Σ(yᵢ − ȳ)².' },
+        { q: 'El modelo lineal es adecuado si…', o: ['s_{y/x} > s_y', 's_{y/x} < s_y', 'a₀ > 0', 'n > 5'], a: 1, e: 'La recta dispersa menos que el promedio.' },
+        { q: 'Si y = a e^{bx}, para usar regresión lineal se ajusta una recta a…', o: ['(x, y)', '(x, ln y)', '(ln x, ln y)', '(1/x, 1/y)'], a: 1, e: 'ln y = ln a + bx.' },
+        { q: 'r² = 0,95 significa que…', o: ['el 95 % de los puntos están sobre la recta', 'la recta explica el 95 % de la variabilidad de los datos', 'la pendiente es 0,95', 'el error es 5 %'], a: 1, e: 'r² = (S_t − S_r)/S_t.' },
+      ],
+      sources: [
+        { title: 'Métodos numéricos para ingenieros', ref: 'Chapra y Canale, 5ª ed., PT5.1 y capítulo 17', points: ['Regresión para datos con ruido (PT5.1).', 'Criterios inadecuados y mínimos cuadrados (17.1.1).', 'S_t antes y S_r después de la regresión, s_{y/x} < s_y, r² (17.1.3, ejemplo 17.2).', 'Linealización de modelos exponencial, potencia y de razón de crecimiento (17.1.5); supuestos estadísticos (17.1.6); regresión polinomial (17.2).'] },
+        { title: 'Apunte: Regresión Lineal', ref: 'Cátedra de Matemática Superior', points: ['Error en la regresión lineal: cantidad de dispersión antes (S_t) y después (S_r) de la regresión.'] },
+      ],
+    },
   );
 })();

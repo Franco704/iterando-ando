@@ -142,5 +142,58 @@
       ],
       sources: [{ title: 'Apunte: Método de la Regla Falsa', ref: 'Cátedra de Matemática Superior', points: ['Deducción por triángulos semejantes y algoritmo.', 'TP 6, 2a por regla falsa resuelto en clase.'] }],
     },
+
+    {
+      id: 'cerrados-teoria',
+      module: 'u5c',
+      title: 'A fondo: errores, cifras significativas y cuál método cerrado es mejor',
+      keywords: 'exactitud precisión error verdadero error relativo aproximado tolerancia cifras significativas scarborough teorema bolzano particularidad métodos cerrados mejor regla falsa unilateral modificada x^10 chapra burden',
+      tldr: 'Los métodos cerrados tienen una <mark>particularidad</mark>: parten de un intervalo donde f cambia de signo y nunca lo pierden, así que <strong>siempre convergen</strong>, aunque despacio. La regla falsa suele ser mejor que la bisección porque usa el valor de f y no solo su signo; pero con funciones muy curvas un extremo queda fijo y la bisección le gana.',
+      goals: ['Distinguir exactitud, precisión, error verdadero y error aproximado.', 'Relacionar la tolerancia con las cifras significativas.', 'Responder “particularidad de los métodos cerrados” y “cuál es mejor” con fundamentos de Chapra y Burden.'],
+      body: `
+        <h2>Exactitud y precisión</h2>
+        <p>Chapra (sección 3.2) usa la analogía del tiro al blanco: la <strong>exactitud</strong> es qué tan cerca del valor verdadero está el resultado (su contrario es el sesgo) y la <strong>precisión</strong>, qué tan cerca están entre sí varios resultados (su contrario es la dispersión). Un método numérico tiene que ser suficientemente exacto y suficientemente preciso para el problema.</p>
+        <h2>Cuatro errores con nombre</h2>
+        ${table(['Nombre', 'Fórmula', 'Cuándo se puede usar'], [
+          ['Error verdadero', 'E<sub>t</sub> = valor verdadero − valor aproximado', 'Solo si se conoce la respuesta exacta'],
+          ['Error relativo porcentual verdadero', 'ε<sub>t</sub> = E<sub>t</sub> / valor verdadero · 100 %', 'Idem; normaliza: 1 cm en un puente no es lo mismo que en un remache'],
+          ['Error relativo porcentual aproximado', 'ε<sub>a</sub> = |(x<sub>r</sub><sup>nuevo</sup> − x<sub>r</sub><sup>anterior</sup>) / x<sub>r</sub><sup>nuevo</sup>| · 100 %', 'Siempre: es el que se usa en los métodos iterativos (Chapra, ec. 3.5)'],
+          ['Tolerancia', 'ε<sub>s</sub>: se itera hasta que |ε<sub>a</sub>| &lt; ε<sub>s</sub>', 'La fija el enunciado: “con un error del 1 %” significa ε<sub>s</sub> = 1 %'],
+        ])}
+        ${eq('ε<sub>s</sub> = (0,5 × 10<sup>2 − n</sup>) %', 'Si |ε_a| < ε_s, el resultado es correcto en al menos n cifras significativas (Scarborough, citado por Chapra, ec. 3.7)')}
+        <p>Con ε<sub>s</sub> = 1 % se garantizan 2 cifras significativas (n = 2 da 0,5 %); para 3 cifras haría falta 0,05 %.</p>
+        ${note('Cuidado al interpretar ε<sub>a</sub>: mide cuánto cambió la estimación, no cuánto falta para la raíz. En el 2P 2025 A, la regla falsa se detiene con ε<sub>a</sub> = 0,56 % en x<sub>r</sub> = 1,37228, cuando la raíz es 1,37755 (error verdadero 0,38 %): ε<sub>a</sub> sirve como criterio, pero no es el error exacto.', 'warn')}
+        <h2>La particularidad de los métodos cerrados</h2>
+        ${def('Métodos cerrados', 'Aprovechan que una función cambia de signo en la vecindad de una raíz. Necesitan dos valores iniciales que encierren la raíz; el intervalo se reduce en cada iteración y la raíz queda siempre dentro.', 'Chapra y Canale, introducción al capítulo 5; resumen de la cátedra.')}
+        <p>El fundamento es el <strong>teorema de Bolzano</strong> (caso particular del valor intermedio): si f es continua en [a, b] y f(a)·f(b) &lt; 0, existe al menos un x en (a, b) con f(x) = 0. Por eso son <strong>convergentes siempre</strong>. Chapra (sección 5.1) marca los casos donde el cambio de signo engaña:</p>
+        <ul>
+          <li>Si f(a) y f(b) tienen el <strong>mismo signo</strong>, puede haber cero raíces o un número par de raíces en el intervalo.</li>
+          <li>Una <strong>raíz doble</strong> (la curva toca el eje sin cruzarlo, como x² en 0) no produce cambio de signo: los cerrados no la detectan.</li>
+          <li>Una <strong>discontinuidad</strong> puede cambiar el signo sin que haya raíz (1/x en [−1, 1]).</li>
+        </ul>
+        <h2>Bisección: lento pero con error garantizado</h2>
+        <p>Cada iteración parte el intervalo por la mitad, entonces el error absoluto después de n iteraciones está acotado de antemano. Burden (teorema 2.1): |p<sub>n</sub> − p| ≤ (b − a)/2ⁿ. Chapra (ec. 5.5) despeja cuántas iteraciones hacen falta para un error E<sub>a,d</sub>: n = log₂(Δx₀/E<sub>a,d</sub>). Ningún otro método de la materia permite saber eso antes de empezar. Su debilidad es que <strong>no mira cuánto vale f</strong>, solo su signo: aunque f(x<sub>i</sub>) esté muy cerca de cero, el próximo punto igual cae en el medio.</p>
+        <h2>Regla falsa: más rápida… casi siempre</h2>
+        <p>La regla falsa une (x<sub>i</sub>, f(x<sub>i</sub>)) y (x<sub>f</sub>, f(x<sub>f</sub>)) con una recta: si |f(x<sub>i</sub>)| es mucho menor que |f(x<sub>f</sub>)|, la nueva estimación cae cerca de x<sub>i</sub>, como se espera. Por eso, en general, converge más rápido. En el 2P 2025 A, con [1; 2], la regla falsa llega a ε<sub>a</sub> &lt; 1 % en 5 iteraciones y la bisección en 7.</p>
+        <p>Pero Chapra (sección 5.3.1, ejemplo 5.6) muestra el caso contrario con f(x) = x¹⁰ − 1 en [0; 1,3]: tras cinco iteraciones la bisección tiene un error verdadero menor al 2 % y la regla falsa sigue lejísimos (x<sub>r</sub> ≈ 0,408, con la raíz en 1: error del 59 %). La curva es tan plana a la izquierda y tan empinada a la derecha que <strong>un extremo queda fijo</strong> (x<sub>f</sub> = 1,3 nunca cambia) y el avance es <strong>unilateral</strong>.</p>
+        ${note('La solución de Chapra (sección 5.3.2) es la <strong>falsa posición modificada</strong>: si un mismo extremo queda fijo dos iteraciones seguidas, se divide a la mitad el valor de f en ese extremo. La recta se inclina hacia el lado estancado y el método recupera la velocidad.', 'tip')}
+        <h2>¿Cuál es el mejor?</h2>
+        ${note('Respuesta modelo (2P tema A y B): “Los métodos cerrados aprovechan el cambio de signo de f alrededor de la raíz: requieren un intervalo [x<sub>i</sub>, x<sub>f</sub>] con f(x<sub>i</sub>)·f(x<sub>f</sub>) &lt; 0, mantienen la raíz encerrada y reducen el intervalo en cada iteración, por lo que siempre convergen, aunque más lento que los abiertos. Conozco bisección (x<sub>r</sub> = (x<sub>i</sub> + x<sub>f</sub>)/2) y regla falsa (x<sub>r</sub> = x<sub>f</sub> − f(x<sub>f</sub>)(x<sub>i</sub> − x<sub>f</sub>)/(f(x<sub>i</sub>) − f(x<sub>f</sub>))). En general es mejor la regla falsa, porque tiene en cuenta la magnitud de f y no solo su signo, y converge en menos iteraciones. La excepción son funciones con mucha curvatura, donde un extremo queda fijo; ahí conviene bisección (que además permite calcular de antemano las iteraciones necesarias) o la regla falsa modificada.”', 'exam')}
+        ${lab(0)}`,
+      labs: [{ type: 'roots', fn: 'pxc', method: 'rf', methods: ['bis', 'rf'], title: 'Bisección contra regla falsa en el 2P 2025', intro: 'f(x) = 5x³ − 3x² − x − 6 en [1; 2]. Contá iteraciones hasta ε_a < 1 % con cada método. Después elegí x³ − 100 y mirá qué extremo queda fijo en la regla falsa.' }],
+      quiz: [
+        { q: 'Que varios resultados estén muy juntos entre sí, pero lejos del valor verdadero, es…', o: ['exacto y preciso', 'preciso pero inexacto', 'exacto pero impreciso', 'ni lo uno ni lo otro'], a: 1, e: 'Precisión = poca dispersión; exactitud = cercanía al valor verdadero.' },
+        { q: 'Para garantizar 3 cifras significativas, ε_s debe ser…', o: ['1 %', '0,5 %', '0,05 %', '5 %'], a: 2, e: '0,5 × 10^(2−3) % = 0,05 %.' },
+        { q: 'Si f(a) y f(b) tienen el mismo signo…', o: ['no hay raíces en [a, b]', 'puede no haber raíces o haber un número par', 'hay exactamente una raíz', 'hay una raíz doble seguro'], a: 1, e: 'Chapra 5.1.' },
+        { q: 'La regla falsa puede ser más lenta que la bisección cuando…', o: ['la función es una recta', 'un extremo queda fijo por la curvatura de f', 'el intervalo es chico', 'f(a) = −f(b)'], a: 1, e: 'Convergencia unilateral, ejemplo x¹⁰ − 1.' },
+        { q: '¿Qué método cerrado permite saber de antemano cuántas iteraciones hacen falta?', o: ['Bisección', 'Regla falsa', 'Ambos', 'Ninguno'], a: 0, e: 'n = log₂(Δx₀/E).' },
+        { q: 'Una raíz doble como la de (x − 2)²…', o: ['la detecta la bisección', 'no produce cambio de signo y los cerrados no la encuentran', 'hace diverger a la bisección', 'se encuentra en una iteración'], a: 1, e: 'La curva toca el eje sin cruzarlo.' },
+      ],
+      sources: [
+        { title: 'Métodos numéricos para ingenieros', ref: 'Chapra y Canale, 5ª ed., secciones 3.2, 3.3, 5.1 a 5.3', points: ['Exactitud y precisión; error verdadero, relativo y aproximado; criterio de cifras significativas (ec. 3.7).', 'Casos en que el cambio de signo engaña (raíces pares, múltiples, discontinuidades).', 'Iteraciones a priori de la bisección (ec. 5.5).', 'Ejemplo 5.6 (x¹⁰ − 1): bisección mejor que falsa posición; falsa posición modificada.'] },
+        { title: 'Análisis numérico', ref: 'Burden, Faires y Burden, 10ª ed., sección 2.1', points: ['Teorema 2.1: |p_n − p| ≤ (b − a)/2ⁿ para la bisección.'] },
+        { title: 'Resumen del 2do parcial', ref: 'Material de la cátedra', points: ['Particularidad de los cerrados y por qué la regla falsa es una alternativa mejorada.'] },
+      ],
+    },
   );
 })();

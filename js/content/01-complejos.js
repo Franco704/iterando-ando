@@ -147,5 +147,53 @@
       ],
       sources: [{ title: 'Apunte: Números Complejos', ref: 'Cátedra de Matemática Superior', points: ['Demostración de la fórmula de Euler por serie de Mc Laurin.', 'Forma exponencial: e^s = e^x (cos y + i sen y).'] }],
     },
+
+    {
+      id: 'complejos-polinomios',
+      module: 'u1',
+      title: 'A fondo: raíces complejas de polinomios y ecuación característica',
+      keywords: 'teorema fundamental del álgebra raíces complejas conjugadas polinomio ecuación característica discriminante sobreamortiguado crítico subamortiguado chapra burden',
+      tldr: 'Los complejos aparecen solos en el resto de la materia: un polinomio de grado n con coeficientes reales tiene <mark>n raíces</mark> (contando multiplicidad) y las complejas vienen en <strong>pares conjugados</strong> λ ± μi. Con la fórmula de Euler, cada par se convierte en e<sup>λt</sup>(cos μt, sen μt): por eso en Laplace y en la función de transferencia aparecen oscilaciones.',
+      goals: ['Enunciar el teorema fundamental del álgebra y la regla de los pares conjugados.', 'Relacionar el discriminante de la ecuación característica con la forma de la solución.', 'Usar la fórmula de Euler para pasar de exponenciales complejas a senos y cosenos.'],
+      body: `
+        ${def('Teorema fundamental del álgebra', 'Si P(x) es un polinomio de grado n ≥ 1 con coeficientes reales o complejos, entonces P(x) = 0 tiene por lo menos una raíz (posiblemente compleja).', 'Burden, Faires y Burden, Análisis numérico, 10ª ed., teorema 2.16.')}
+        <p>Aplicándolo una y otra vez (se divide P por (x − x₁) y el cociente vuelve a tener una raíz) se llega al corolario 2.17 de Burden: P se factoriza como a<sub>n</sub>(x − x₁)<sup>m₁</sup>(x − x₂)<sup>m₂</sup>…(x − x<sub>k</sub>)<sup>m<sub>k</sub></sup> con m₁ + … + m<sub>k</sub> = n. Chapra lo resume en tres reglas (sección 7.1):</p>
+        ${table(['Regla', 'Consecuencia práctica'], [
+          ['Una ecuación de grado n tiene n raíces reales o complejas (no necesariamente distintas)', 'El denominador de grado 2 de una función de transferencia siempre tiene 2 polos: reales distintos, uno doble o dos complejos'],
+          ['Si n es impar, hay al menos una raíz real', 'Un polinomio cúbico como los del 2do parcial (3x³ + 2x − 4) siempre cruza el eje x: hay raíz para buscar con bisección o Newton'],
+          ['Si los coeficientes son reales, las raíces complejas vienen en pares conjugados λ ± μi', 'Las fracciones simples con polos complejos se agrupan de a dos y dan senos y cosenos reales'],
+        ])}
+        <h2>Por qué los pares conjugados</h2>
+        <p>Si P tiene coeficientes reales y P(z) = 0, al conjugar toda la igualdad se obtiene P(z̄) = 0̄ = 0, porque conjugar una suma o un producto es sumar o multiplicar los conjugados y los coeficientes reales no cambian. Además (x − z)(x − z̄) = x² − 2λx + (λ² + μ²) tiene coeficientes reales: el par entero se puede tratar como un factor cuadrático real, que es justamente lo que se hace al <strong>completar cuadrados</strong> en Laplace.</p>
+        <h2>La ecuación característica (Chapra, sección 7.1)</h2>
+        <p>Para una ecuación diferencial lineal a y″ + b y′ + c y = 0 se prueba y = e<sup>rt</sup> y queda el polinomio <strong>a r² + b r + c = 0</strong>, la ecuación característica. Sus raíces son exactamente los <strong>polos</strong> que después aparecen en el denominador de Y(s) o de P(s).</p>
+        ${table(['Discriminante b² − 4ac', 'Raíces', 'Solución', 'Nombre (Chapra)'], [
+          ['&gt; 0', 'reales distintas r₁, r₂', 'c₁e<sup>r₁t</sup> + c₂e<sup>r₂t</sup>', 'sobreamortiguado'],
+          ['= 0', 'real doble λ', '(c₁ + c₂t) e<sup>λt</sup>', 'amortiguamiento crítico'],
+          ['&lt; 0', 'complejas λ ± μi', 'e<sup>λt</sup>(c₁ cos μt + c₂ sen μt)', 'subamortiguado'],
+        ])}
+        <p>En el caso complejo, la fórmula de Euler e<sup>iμt</sup> = cos μt + i sen μt convierte c₁e<sup>(λ+μi)t</sup> + c₂e<sup>(λ−μi)t</sup> en senos y cosenos multiplicados por e<sup>λt</sup>: la <strong>parte real λ</strong> decide si la respuesta decae (λ &lt; 0) o crece (λ &gt; 0), y la <strong>parte imaginaria μ</strong> es la frecuencia de oscilación.</p>
+        ${note('Ejemplo del 1er parcial 2025 A: y″ + 6y′ + 10y = 5u′ + 15u. La ecuación característica s² + 6s + 10 = 0 tiene discriminante 36 − 40 = −4 &lt; 0 y raíces −3 ± i. La respuesta oscila con frecuencia 1 y se apaga como e<sup>−3t</sup>.', 'exam')}
+        ${lab(0)}`,
+      labs: [{ type: 'classify', title: '¿Cómo son las raíces?', buckets: ['Reales distintas', 'Real doble', 'Complejas conjugadas'], items: [
+        { t: 's² + 5s + 4', b: 0, why: '25 − 16 = 9 &gt; 0: raíces −1 y −4.' },
+        { t: 's² + 6s + 10', b: 2, why: '36 − 40 = −4 &lt; 0: −3 ± i.' },
+        { t: 's² + 10s + 25', b: 1, why: '100 − 100 = 0: −5 doble (1P 2025 A, 1b).' },
+        { t: 's² − 2s − 3', b: 0, why: '4 + 12 = 16: raíces 3 y −1.' },
+        { t: '2s² + 8s + 26', b: 2, why: '64 − 208 &lt; 0: −2 ± 3i (1P 2024, tema 2).' },
+        { t: '3s² + 18s + 30', b: 2, why: '324 − 360 &lt; 0: −3 ± i (1P 2024, tema 1).' },
+      ] }],
+      quiz: [
+        { q: 'Un polinomio de grado 5 con coeficientes reales tiene…', o: ['exactamente 5 raíces reales', 'al menos una raíz real', 'ninguna raíz real necesariamente', 'solo raíces complejas'], a: 1, e: 'Grado impar: al menos una real (Chapra 7.1). Las complejas van de a pares.' },
+        { q: 'Si 2 + 3i es raíz de un polinomio de coeficientes reales, también lo es…', o: ['−2 + 3i', '2 − 3i', '3 + 2i', '−2 − 3i'], a: 1, e: 'Su conjugado.' },
+        { q: 'Las raíces de s² + 4s + 13 son…', o: ['−2 ± 3i', '2 ± 3i', '−4 y −13', '−2 ± 9i'], a: 0, e: '(−4 ± √(16 − 52))/2 = −2 ± 3i.' },
+        { q: 'Con raíces características −1 ± 2i, la respuesta…', o: ['crece oscilando', 'oscila y se apaga como e^(−t)', 'decae sin oscilar', 'es una recta'], a: 1, e: 'Parte real −1: decae. Parte imaginaria 2: oscila con frecuencia 2.' },
+        { q: 'La raíz doble de la ecuación característica da una solución del tipo…', o: ['c₁e^(λt) + c₂e^(λt)', '(c₁ + c₂t)e^(λt)', 'c₁ cos λt', 'c₁t²'], a: 1, e: 'Amortiguamiento crítico: aparece el factor t, como el término t e^(pt) de un polo doble en Laplace.' },
+      ],
+      sources: [
+        { title: 'Análisis numérico', ref: 'Burden, Faires y Burden, 10ª ed., sección 2.6', points: ['Teorema 2.16 (fundamental del álgebra) y corolario 2.17 (factorización en n raíces con multiplicidad).', 'Corolario 2.18: dos polinomios de grado ≤ n que coinciden en más de n puntos son iguales (base de la unicidad del polinomio interpolante).'] },
+        { title: 'Métodos numéricos para ingenieros', ref: 'Chapra y Canale, 5ª ed., sección 7.1', points: ['Reglas de las raíces de un polinomio (n raíces, al menos una real si n es impar, complejas en pares conjugados).', 'Ecuación característica de una EDO lineal de segundo orden: casos sobreamortiguado, crítico y subamortiguado; uso de la fórmula de Euler.'] },
+      ],
+    },
   );
 })();

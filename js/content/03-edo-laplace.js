@@ -95,5 +95,55 @@
       ],
       sources: [{ title: 'Clase: Ecuaciones Diferenciales', ref: 'Cátedra de Matemática Superior', points: ['TP 3, ejercicios 1 y 3 resueltos por residuos.'] }],
     },
+
+    {
+      id: 'edo-teoria',
+      module: 'u2e',
+      title: 'A fondo: solución, condiciones iniciales y problema de valor inicial',
+      keywords: 'solución ecuación diferencial constante de integración condiciones iniciales problema de valor inicial valor frontera razón de cambio orden número de condiciones bien planteado lipschitz chapra burden',
+      tldr: 'Una ecuación diferencial describe una <mark>razón de cambio</mark>; resolverla es encontrar la función. La solución general trae constantes arbitrarias (una por orden), y las <strong>condiciones iniciales</strong> (el estado del sistema al empezar) eligen una sola curva. Una EDO de orden n necesita n condiciones.',
+      goals: ['Explicar qué representa una ecuación diferencial y qué es su solución.', 'Explicar qué significan las condiciones iniciales y cuántas hacen falta.', 'Responder los verdadero o falso típicos sobre EDO.'],
+      body: `
+        <h2>Qué dice una ecuación diferencial</h2>
+        <p>Las leyes físicas suelen escribirse en términos de <strong>cambios</strong>: cómo varía la velocidad, la temperatura o la carga. Chapra (PT7.1) lo dice así: “más que describir directamente el estado de los sistemas físicos, las leyes a menudo se expresan en términos de los cambios del espacio y del tiempo”. Por eso el resumen de la cátedra define que las ecuaciones diferenciales “son útiles para relacionar razones de cambio de variables y de otros parámetros”.</p>
+        ${note('V o F del 1P 2025 B: “Una ecuación diferencial ordinaria no representa una razón de cambio de una variable con respecto a otra”. <strong>Falso</strong>: dy/dx es exactamente la razón de cambio de la variable dependiente y respecto de la independiente x.', 'exam')}
+        <h2>Solución general y constantes</h2>
+        <p>Chapra (PT7.2) parte de y = −0,5x⁴ + 4x³ − 10x² + 8,5x + 1, la deriva y obtiene la EDO dy/dx = −2x³ + 12x² − 20x + 8,5. Al integrar para volver, el 1 se pierde y aparece una <strong>constante C</strong>: hay infinitas soluciones, una por cada C (una familia de curvas paralelas).</p>
+        ${h.chart({ x: [0, 4], y: [-2, 6], ticks: { x: [1, 2, 3], y: [2, 4] }, curves: [-1, 0, 1, 2, 3].map((C) => ({ f: (x) => -0.5 * x ** 4 + 4 * x ** 3 - 10 * x ** 2 + 8.5 * x + C, cls: C === 1 ? 'c-root' : 'c-tan', ghost: C !== 1, label: C === 1 ? 'C = 1' : '' })), points: [{ x: 0, y: 1, cls: 'c-root', label: 'y(0) = 1', pos: 'se' }] }, 'Chapra, figura PT7.4: la misma ecuación diferencial tiene una familia de soluciones. La condición inicial y(0) = 1 elige una.')}
+        ${def('Condiciones iniciales', 'Son los valores conocidos de la función y/o sus derivadas en un instante inicial.', 'Resumen de la cátedra, 1er parcial.')}
+        <p>Interpretación física: son el <strong>estado del sistema en el momento en que se empieza a estudiarlo</strong> (posición y velocidad iniciales, carga inicial del capacitor…). En el paracaidista de Chapra, la condición inicial v(0) = 0 dice que en t = 0 todavía no cae.</p>
+        ${table(['Orden de la EDO', 'Constantes en la solución general', 'Condiciones necesarias', 'En Laplace aparecen como'], [
+          ['1', '1', 'y(0)', 'sY − y(0)'],
+          ['2', '2', 'y(0), y′(0)', 's²Y − s y(0) − y′(0)'],
+          ['n', 'n', 'y(0), y′(0), …, y⁽ⁿ⁻¹⁾(0)', 'sⁿY − sⁿ⁻¹y(0) − … − y⁽ⁿ⁻¹⁾(0)'],
+        ])}
+        <p>Si todas las condiciones se dan en el mismo punto (t = 0) es un <strong>problema de valor inicial</strong>; si se dan en puntos distintos (los extremos de una viga), es un problema de <strong>valor en la frontera</strong> (Chapra, PT7.2). En la materia, todos son de valor inicial.</p>
+        <h2>¿Siempre hay una única solución?</h2>
+        <p>Burden (sección 5.1) da la garantía: si f(t, y) es continua y cumple la <strong>condición de Lipschitz</strong> en y (|f(t, y₁) − f(t, y₂)| ≤ L|y₁ − y₂|), el problema y′ = f(t, y), y(a) = α tiene <strong>una única solución</strong> y además está <strong>bien planteado</strong>: un pequeño cambio en los datos produce un pequeño cambio en la solución. Eso es lo que justifica aproximarla numéricamente en la Unidad 4: los errores de redondeo son pequeñas perturbaciones y no cambian la respuesta de forma drástica.</p>
+        <h2>Linealidad: el error del verdadero o falso</h2>
+        <p>La linealidad se decide mirando la variable <strong>dependiente</strong> (y y sus derivadas), nunca la independiente. Chapra (PT7.1) escribe la forma general de una EDO lineal: a<sub>n</sub>(x) y⁽ⁿ⁾ + … + a₁(x) y′ + a₀(x) y = f(x), donde los coeficientes a y f pueden ser cualquier función de x.</p>
+        ${note('V o F del 1P 2025 B: “Una ecuación diferencial ordinaria es no lineal cuando hay potencias, funciones trascendentales o productos de las variables <em>independientes</em>”. <strong>Falso</strong>: es no lineal cuando eso ocurre con las variables <strong>dependientes</strong> y sus derivadas. y″ + x² y = sen x es lineal aunque tenga x² y sen x.', 'exam')}
+        ${lab(0)}`,
+      labs: [{ type: 'classify', title: '¿Verdadero o falso?', buckets: ['Verdadero', 'Falso'], items: [
+        { t: 'Una EDO de orden 3 necesita 3 condiciones iniciales para tener solución única', b: 0, why: 'Una por cada constante de integración.' },
+        { t: 'y″ + x² y = sen x es no lineal porque tiene x²', b: 1, why: 'x es la variable independiente: la ecuación es lineal.' },
+        { t: 'Una EDO no representa una razón de cambio', b: 1, why: 'Las derivadas son razones de cambio.' },
+        { t: 'Las condiciones iniciales describen el estado del sistema al comenzar el estudio', b: 0, why: 'Definición de la cátedra.' },
+        { t: 'Con Laplace, las condiciones iniciales se reemplazan al final, después de antitransformar', b: 1, why: 'Entran al transformar las derivadas, antes de despejar Y(s).' },
+        { t: 'Sin condiciones iniciales, la solución de una EDO es una familia de funciones', b: 0, why: 'Solución general con constantes arbitrarias (Chapra, figura PT7.4).' },
+      ] }],
+      quiz: [
+        { q: 'Una EDO de segundo orden necesita…', o: ['una condición inicial', 'dos condiciones', 'ninguna', 'tres'], a: 1, e: 'y(0) y y′(0).' },
+        { q: 'En un problema de valor inicial, las condiciones se dan…', o: ['en distintos puntos', 'todas en el mismo valor de la variable independiente', 'al final del intervalo', 'solo para la segunda derivada'], a: 1, e: 'Chapra PT7.2. Si se dan en puntos distintos es de valor en la frontera.' },
+        { q: 'La solución general de dy/dx = 2x es…', o: ['x²', 'x² + C', '2', '2x + C'], a: 1, e: 'Una constante por integrar una vez.' },
+        { q: 'Que el problema esté “bien planteado” significa que…', o: ['tiene solución exacta en fórmula', 'pequeños cambios en los datos producen pequeños cambios en la solución (y hay solución única)', 'es lineal', 'es de primer orden'], a: 1, e: 'Burden 5.1.' },
+        { q: 'y″ + 3y′ y = 0 es…', o: ['lineal', 'no lineal', 'parcial', 'de tercer orden'], a: 1, e: 'Producto de la variable dependiente por su derivada.' },
+      ],
+      sources: [
+        { title: 'Métodos numéricos para ingenieros', ref: 'Chapra y Canale, 5ª ed., PT7.1 y PT7.2', points: ['Forma general de una EDO lineal (PT7.8) y linealización.', 'Solución general con constante de integración (figura PT7.4) y condición inicial.', 'n condiciones para orden n; valor inicial contra valor en la frontera.'] },
+        { title: 'Análisis numérico', ref: 'Burden, Faires y Burden, 10ª ed., sección 5.1', points: ['Condición de Lipschitz, existencia y unicidad (teorema 5.4).', 'Problema bien planteado (definición 5.5, teorema 5.6).'] },
+        { title: 'Resumen del 1er parcial', ref: 'Material de la cátedra', points: ['“Las E.D son útiles para relacionar razones de cambio de variables y de otros parámetros.”', 'Condiciones iniciales: valores conocidos de la función y/o sus derivadas en un instante inicial.'] },
+      ],
+    },
   );
 })();

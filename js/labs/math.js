@@ -216,12 +216,14 @@
     b1: { l: 'dy/dx = y ln(x + 1), y(0) = 1', f: (x, y) => y * Math.log(x + 1), x0: 0, y0: 1, xe: 2 },
     a2: { l: 'dy/dx = y x² − y, y(0) = 1', f: (x, y) => y * x * x - y, x0: 0, y0: 1, xe: 2 },
     e3: { l: 'dy/dx = 2x − 3y + 1, y(1) = 5', f: (x, y) => 2 * x - 3 * y + 1, x0: 1, y0: 5, xe: 2 },
+    pa: { l: '1P 2025 A: dy/dx = 4x³ − 9x² + 4x − 7, y(1) = 2', f: (x) => 4 * x ** 3 - 9 * x * x + 4 * x - 7, x0: 1, y0: 2, xe: 2 },
+    pb: { l: '1P 2025 B: dy/dx = 4x³ − 5x² + 4x − 9, y(1) = 5', f: (x) => 4 * x ** 3 - 5 * x * x + 4 * x - 9, x0: 1, y0: 5, xe: 2 },
   };
   const MCLS = { E: 'c-s', H: 'c-g', P: 'c-eq', RK3: 'c-x', RK4: 'c-ok' };
   L.ode = (el, cfg) => {
     let pid = cfg.problem || 'a1', h = cfg.h || 0.5;
     const on = new Set(cfg.methods || ['E', 'H']);
-    el.insertAdjacentHTML('beforeend', `<div class="lab-row">${select('p', 'Ecuación (TP 5)', Object.entries(ODES).map(([k, o]) => [k, o.l]), pid)}
+    el.insertAdjacentHTML('beforeend', `<div class="lab-row">${select('p', 'Ecuación (TP 5 y parciales)', Object.entries(ODES).map(([k, o]) => [k, o.l]), pid)}
       ${select('h', 'Paso h', [[1, '1'], [0.5, '0,5'], [0.25, '0,25'], [0.1, '0,1']].map(([k, t]) => [String(k), t]), String(h))}</div>
       <div class="lab-row" role="group" aria-label="Métodos">${Object.keys(MCLS).map((m) => `<label class="seg"><input type="checkbox" value="${m}" ${on.has(m) ? 'checked' : ''}><span>${N.NAMES[m]}</span></label>`).join('')}</div>`);
     const [host, read] = shell(el);
@@ -255,6 +257,8 @@
     p3c: { l: 'f(x) = e^(−x) − x', f: (x) => Math.exp(-x) - x, df: (x) => -Math.exp(-x) - 1, g: (x) => Math.exp(-x), gl: 'g(x) = e^(−x)', x: [-0.2, 1.4], y: [-1.2, 1.4], init: { a: 0, b: 1, x0: 0.5, x1: 1 } },
     p4a: { l: 'h(x) = cos x + 1/2', f: (x) => Math.cos(x) + 0.5, df: (x) => -Math.sin(x), g: (x) => x + Math.cos(x) + 0.5, gl: 'g(x) = x + cos x + 1/2', x: [0, 6.3], y: [-0.8, 1.8], init: { a: 1.5, b: 3, x0: 2, x1: 2.5 } },
     p4c: { l: 'f(x) = x³ − 100', f: (x) => x ** 3 - 100, df: (x) => 3 * x * x, g: (x) => 10 / Math.sqrt(x), gl: 'g(x) = 10/√x', x: [0, 6], y: [-110, 120], init: { a: 4, b: 5, x0: 4, x1: 5 } },
+    pxa: { l: '2P tema A: f(x) = 3x³ + 2x − 4', f: (x) => 3 * x ** 3 + 2 * x - 4, df: (x) => 9 * x * x + 2, x: [-0.2, 1.5], y: [-5, 7], init: { a: 0, b: 1, x0: 1, x1: 1 } },
+    pxc: { l: '2P 2025 A: f(x) = 5x³ − 3x² − x − 6', f: (x) => 5 * x ** 3 - 3 * x * x - x - 6, df: (x) => 15 * x * x - 6 * x - 1, x: [0, 2.1], y: [-8, 22], init: { a: 1, b: 2, x0: 1, x1: 2 } },
     p5a: { l: 'f(x) = 4x² − e^(−x) − 1', f: (x) => 4 * x * x - Math.exp(-x) - 1, df: (x) => 8 * x + Math.exp(-x), x: [-0.2, 1.2], y: [-2.5, 3.5], init: { a: 0.5, b: 1, x0: 1, x1: 1 } },
   };
   const MN = { bis: 'Bisección', rf: 'Regla falsa', fp: 'Punto fijo', nr: 'Newton Raphson', sec: 'Secante' };
@@ -377,6 +381,8 @@
     a: { l: 'TP 7, 2a', xs: [1, 2, 3, 5, 7, 8], ys: [3, 5, 7, 11, 15, 17], x0: 4 },
     b: { l: 'TP 7, 2b', xs: [-1, 0, 3, 4, 5], ys: [2, 0, 10, 17, 26], x0: 2 },
     c: { l: 'TP 7, 2c', xs: [1, 2, 3, 5, 7, 8, 10, 12, 13, 14], ys: [4, 7, 10, 16, 22, 25, 31, 37, 40, 43], x0: 11 },
+    pb: { l: '2P tema B', xs: [0, 2, 3, 4, 5, 7, 10], ys: [2, 5, 8, 11, 12, 14, 23], x0: 2.5 },
+    p25: { l: '2P 2025 A', xs: [1, 3, 5, 6, 9, 10, 11, 13], ys: [5, 7, 10, 13, 16, 19, 23, 25], x0: 7 },
   };
   L.interp = (el, cfg) => {
     let sid = cfg.set || 'sen', g = cfg.deg || 1, how = cfg.how || 'newton';
@@ -429,6 +435,7 @@
     c: { l: 'TP 8, c', xs: [1, 3, 5, 7, 10, 12, 13, 16, 18, 20], ys: [3, 2, 6, 5, 8, 7, 10, 9, 12, 10] },
     d: { l: 'TP 8, d', xs: [1, 3, 5, 6, 8, 10, 12], ys: [1.5, 2.5, 3.5, 4, 5, 6, 7] },
     e: { l: 'TP 8, e', xs: [2, 3, 5, 7, 9, 10, 11], ys: [4, 9, 25, 49, 81, 100, 121] },
+    pb: { l: '2P tema B', xs: [1, 2, 3, 4, 5, 6, 7], ys: [7, 10, 12, 14, 17, 21, 24] },
   };
   L.regression = (el, cfg) => {
     let sid = cfg.set || 'b', g = cfg.deg || 1, res = true;
@@ -459,6 +466,7 @@
     saw: { l: 'f(x) = x en (−π, π)', f: (x) => x, c: -PI, L: PI, br: [] },
     par: { l: 'f(x) = x² en (−π, π)', f: (x) => x * x, c: -PI, L: PI, br: [] },
     half: { l: 'f(x) = 0 en (−π, 0), x en (0, π)', f: (x) => (x < 0 ? 0 : x), c: -PI, L: PI, br: [0] },
+    step3: { l: '2do parcial: f(x) = 0 en (−π, 0), 3 en (0, π)', f: (x) => (x < 0 ? 0 : 3), c: -PI, L: PI, br: [0] },
     t1a: { l: 'TP 9, 1a: 0 en (−5, 0), 3 en (0, 5)', f: (x) => (x < 0 ? 0 : 3), c: -5, L: 5, br: [0] },
     t1c: { l: 'TP 9, 1c: 8 en (0, 2), −8 en (2, 4)', f: (x) => (x < 2 ? 8 : -8), c: 0, L: 2, br: [2] },
     t1e: { l: 'TP 9, 1e: |x| en (−4, 4)', f: (x) => Math.abs(x), c: -4, L: 4, br: [0] },

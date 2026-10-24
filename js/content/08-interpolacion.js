@@ -104,5 +104,63 @@
       ],
       sources: [{ title: 'Apunte y clase: Polinomios de Lagrange', ref: 'Cátedra de Matemática Superior', points: ['Forma general, lineal y cuadrática.', 'TP 7, 3 (f(1) lineal y cuadrática) en clase.'] }],
     },
+
+    {
+      id: 'interp-teoria',
+      module: 'u6i',
+      title: 'A fondo: cuándo interpolar, unicidad, error y extrapolación',
+      keywords: 'interpolación cuándo se usa para qué datos precisos tabla único polinomio más de un polinomio teorema error extrapolación elección de puntos runge trazadores splines newton lagrange comparación chapra burden',
+      tldr: 'Se interpola cuando los datos son <mark>precisos</mark> (tablas, mediciones confiables) y se necesitan valores intermedios: la curva pasa exactamente por los puntos. Por n + 1 puntos pasa <strong>un único</strong> polinomio de grado ≤ n; Newton y Lagrange son dos maneras de escribirlo. Pero con otros puntos de la tabla sale otro polinomio y otra estimación: hay que elegir los puntos más cercanos y desconfiar de la extrapolación.',
+      goals: ['Responder cuándo y para qué se usa la interpolación.', 'Justificar la unicidad del polinomio interpolante y aclarar el “¿hay más de uno?”.', 'Estimar el error y reconocer una extrapolación.', 'Comparar Newton y Lagrange.'],
+      body: `
+        <h2>¿Cuándo y para qué?</h2>
+        <p>Chapra (PT5.1) separa los dos caminos del ajuste de curvas por la <strong>calidad de los datos</strong>. Si los datos tienen error o “ruido”, no tiene sentido obligar a la curva a pasar por cada punto: se busca la tendencia (regresión). Si se sabe que los datos son <strong>muy precisos</strong>, como los valores de una tabla (densidad del agua, propiedades de un gas), se ajusta una curva que pase <strong>por cada punto</strong>: eso es interpolar.</p>
+        ${table(['Uso', 'Ejemplo'], [
+          ['Estimar valores intermedios entre datos conocidos', 'f(2,5) a partir de f(2) y f(3)'],
+          ['Reemplazar una función complicada por un polinomio simple', 'Aproximar sen x con una parábola en [0; 1,5]'],
+          ['Construir otras técnicas numéricas', 'Las fórmulas de integración numérica y la deducción de Heun (regla del trapecio) salen de integrar polinomios interpolantes'],
+          ['Interpolación inversa', 'Dado un valor de f, estimar el x que lo produce (Chapra 18.4)'],
+        ])}
+        <h2>¿Hay más de un polinomio de interpolación?</h2>
+        ${def('Unicidad', 'Si x₀, x₁, …, x<sub>n</sub> son n + 1 números distintos y f es una función cuyos valores están determinados en estos números, entonces existe un único polinomio P(x) de grado a lo sumo n con f(x<sub>k</sub>) = P(x<sub>k</sub>) para cada k = 0, 1, …, n.', 'Burden, Faires y Burden, 10ª ed., teorema 3.2.')}
+        <p>La prueba de la unicidad es corta: si P y Q fueran dos, P − Q sería un polinomio de grado ≤ n con n + 1 raíces, y eso solo es posible si P − Q = 0 (corolario 2.18). El apunte de la cátedra lo dice así: “para n + 1 puntos existe uno y sólo un polinomio de n-ésimo orden que pasa a través de todos los puntos”, aunque “existen una gran variedad de fórmulas matemáticas para expresarlo”.</p>
+        ${note('Respuesta completa a “¿hay más de un polinomio de interpolación?”: <strong>para un mismo conjunto de n + 1 puntos, no</strong>: el polinomio es único y Newton y Lagrange dan exactamente el mismo, escrito de otra forma. <strong>Pero</strong> en una tabla con muchos datos hay que elegir qué puntos usar, y cada elección da un polinomio distinto. En el 2P 2025 A, f(7) con la parábola por x = 5, 6, 9 da 15; por x = 6, 9, 10 da 13.', 'exam')}
+        <h2>El error de interpolación</h2>
+        ${eq(`f(x) − P<sub>n</sub>(x) = ${frac('f<sup>(n+1)</sup>(ξ)', '(n + 1)!')} (x − x₀)(x − x₁)…(x − x<sub>n</sub>)`, 'Burden, teorema 3.3; Chapra, ec. 18.16')}
+        <p>Tres lecturas útiles:</p>
+        <ul>
+          <li>Se anula en los nodos (los factores x − x<sub>k</sub>): el polinomio es exacto en los datos.</li>
+          <li>Es chico si x está <strong>cerca</strong> de los puntos usados: por eso se eligen los más próximos y, si se puede, que rodeen a x.</li>
+          <li>Si f es un polinomio de grado ≤ n, f<sup>(n+1)</sup> = 0 y la interpolación es <strong>exacta</strong>. En el 2P tema A los datos de x = 2 a 10 están sobre la recta 2x + 3: la diferencia dividida segunda da 0 y la parábola coincide con la recta.</li>
+        </ul>
+        <p>Como f casi nunca se conoce, Chapra (ec. 18.18) estima el error con un dato más: R<sub>n</sub> ≈ f[x<sub>n+1</sub>, x<sub>n</sub>, …, x₀](x − x₀)…(x − x<sub>n</sub>). Es exactamente el término que agregaría el polinomio de Newton de un grado más.</p>
+        <h2>Extrapolación: estimar afuera de la tabla</h2>
+        <p>Chapra (sección 18.5): “la extrapolación es el proceso de estimar un valor de f(x) que se encuentra fuera del dominio de los valores conocidos… el error en la extrapolación puede ser muy grande”, porque los factores (x − x<sub>k</sub>) crecen todos a la vez y la curva real puede separarse rápido de la predicción.</p>
+        ${note('Varios parciales piden valores fuera de la tabla: f(10,5) con datos hasta x = 10 (2P temas A y B) y f(15) con datos hasta x = 13 (2P 2025 A). Hay que hacerlo, pero <strong>decirlo</strong>: en el 2P 2025 A la recta da f(15) = 27 y la parábola 19. Esa diferencia es la señal de que el resultado no es confiable.', 'warn')}
+        <h2>Newton o Lagrange</h2>
+        ${table(['', 'Diferencias divididas de Newton', 'Lagrange'], [
+          ['Forma', 'f<sub>n</sub>(x) = b₀ + b₁(x − x₀) + b₂(x − x₀)(x − x₁) + …, con b<sub>k</sub> = diferencias divididas', 'f<sub>n</sub>(x) = Σ L<sub>i</sub>(x) f(x<sub>i</sub>), con L<sub>i</sub>(x) = Π<sub>j≠i</sub> (x − x<sub>j</sub>)/(x<sub>i</sub> − x<sub>j</sub>)'],
+          ['Agregar un punto', 'Se suma un término; lo anterior se conserva', 'Hay que recalcular todos los L<sub>i</sub>'],
+          ['Estimar el error', 'Directo: el término siguiente (Chapra 18.18)', 'No es inmediato'],
+          ['Cuándo conviene', 'Cuando no se sabe de antemano el grado: se sube de a uno y se mira cuánto cambia', 'Cálculos a mano rápidos y cuando se repiten las mismas x con distintas y'],
+        ])}
+        <h2>¿Y si uso todos los puntos?</h2>
+        <p>Subir el grado no siempre mejora. Con muchos puntos el polinomio de grado alto oscila entre ellos (y acumula redondeo), sobre todo cerca de los extremos. Chapra (sección 18.6) propone en ese caso los <strong>trazadores (splines)</strong>: polinomios de grado bajo por tramos, unidos con suavidad. En la materia se trabaja con grado 1 y 2 sobre los puntos más cercanos, que es la práctica recomendada.</p>
+        ${lab(0)}`,
+      labs: [{ type: 'interp', set: 'p25', deg: 2, how: 'newton', title: 'Elegir los puntos cambia la estimación', intro: 'Datos del 2P 2025 A. Mové x entre 5 y 10 y alterná lineal y cuadrática: donde la tabla cambia de pendiente, la recta y la parábola se separan.' }],
+      quiz: [
+        { q: 'Se prefiere interpolar (y no hacer regresión) cuando…', o: ['los datos tienen mucho ruido', 'los datos son precisos, como los de una tabla', 'hay muchos datos', 'se quiere una recta'], a: 1, e: 'Chapra PT5.1.' },
+        { q: '¿Cuántos polinomios de grado ≤ 2 pasan por tres puntos con x distintas?', o: ['ninguno', 'uno', 'dos (Newton y Lagrange)', 'infinitos'], a: 1, e: 'Teorema 3.2 de Burden; Newton y Lagrange son el mismo polinomio.' },
+        { q: 'El error de interpolación es cero…', o: ['en el punto medio', 'en los nodos', 'nunca', 'solo para Lagrange'], a: 1, e: 'Por los factores (x − x_k).' },
+        { q: 'Estimar f(15) con datos de x = 1 a x = 13 es…', o: ['interpolar', 'extrapolar, con riesgo de error grande', 'regresión', 'imposible'], a: 1, e: 'Está fuera del dominio de los datos.' },
+        { q: 'Si la diferencia dividida segunda da 0, entonces…', o: ['la parábola coincide con la recta', 'hay un error de cálculo', 'no se puede interpolar', 'Lagrange da otro resultado'], a: 0, e: 'Los tres puntos están alineados.' },
+        { q: 'Una ventaja de Newton sobre Lagrange es que…', o: ['da otro polinomio', 'al agregar un punto solo se suma un término', 'no usa los datos', 'siempre es exacto'], a: 1, e: 'Por eso también sirve para estimar el error.' },
+      ],
+      sources: [
+        { title: 'Métodos numéricos para ingenieros', ref: 'Chapra y Canale, 5ª ed., PT5.1 y capítulo 18', points: ['Regresión para datos con ruido, interpolación para datos precisos.', 'Error de la interpolación de Newton (ecs. 18.16 a 18.18).', 'Interpolación inversa (18.4), extrapolación (18.5) y trazadores (18.6).'] },
+        { title: 'Análisis numérico', ref: 'Burden, Faires y Burden, 10ª ed., sección 3.1', points: ['Teorema 3.2: existencia y unicidad del polinomio de Lagrange.', 'Teorema 3.3: fórmula del error con f^{(n+1)}(ξ)/(n + 1)!.'] },
+        { title: 'Apunte: Interpolación', ref: 'Cátedra de Matemática Superior', points: ['“Para n + 1 puntos, existe uno y sólo un polinomio de n-ésimo orden que pasa a través de todos los puntos.”'] },
+      ],
+    },
   );
 })();

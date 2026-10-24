@@ -168,5 +168,50 @@
       ],
       sources: [{ title: 'Apunte: Raíces de Ecuaciones', ref: 'Cátedra de Matemática Superior', points: ['Comparación entre métodos cerrados y abiertos.'] }, { title: 'Métodos Numéricos para Ingenieros', ref: 'Chapra y Canale, cap. 6', points: ['Convergencia lineal y cuadrática.'] }],
     },
+
+    {
+      id: 'abiertos-convergencia',
+      module: 'u5a',
+      title: 'A fondo: orden de convergencia y cuál método abierto es mejor',
+      keywords: 'métodos abiertos particularidad orden de convergencia lineal cuadrática superlineal error newton punto fijo g prima secante modificada raíces múltiples divergencia mejor método abierto chapra burden',
+      tldr: 'Los métodos abiertos parten de <mark>uno o dos valores que no necesitan encerrar la raíz</mark>: cuando convergen son mucho más rápidos que los cerrados, pero pueden diverger. Su velocidad se mide con el <strong>orden de convergencia</strong>: punto fijo es lineal (E<sub>i+1</sub> ≈ g′·E<sub>i</sub>), Newton Raphson es cuadrático (E<sub>i+1</sub> ≈ −f″/(2f′)·E<sub>i</sub>²) y la secante queda en el medio.',
+      goals: ['Explicar la particularidad de los métodos abiertos.', 'Definir orden de convergencia y aplicarlo a punto fijo, Newton y secante.', 'Argumentar cuál es el mejor método abierto (2P 2025).'],
+      body: `
+        <h2>La particularidad de los métodos abiertos</h2>
+        ${def('Métodos abiertos', 'Se basan en fórmulas que requieren únicamente de un solo valor de inicio x o que empiecen con un par de ellos, pero que no necesariamente encierran la raíz. Éstos, algunas veces, divergen o se alejan de la raíz verdadera a medida que se avanza en el cálculo. Sin embargo, cuando los métodos abiertos convergen, en general lo hacen mucho más rápido que los métodos cerrados.', 'Chapra y Canale, 5ª ed., introducción al capítulo 6.')}
+        <h2>Orden de convergencia</h2>
+        <p>Burden (sección 2.4) define: una sucesión p<sub>n</sub> → p converge con <strong>orden α</strong> si |p<sub>n+1</sub> − p| / |p<sub>n</sub> − p|<sup>α</sup> → λ (una constante). Con α = 1 la convergencia es <strong>lineal</strong>: el error se multiplica por λ en cada paso. Con α = 2 es <strong>cuadrática</strong>: el error nuevo es proporcional al <em>cuadrado</em> del anterior, y la cantidad de cifras correctas aproximadamente se duplica en cada iteración.</p>
+        <h3>Punto fijo: lineal</h3>
+        <p>Chapra (cuadro 6.1) resta x<sub>r</sub> = g(x<sub>r</sub>) de x<sub>i+1</sub> = g(x<sub>i</sub>) y usa el teorema del valor medio:</p>
+        ${eq('E<sub>i+1</sub> = g′(ξ) · E<sub>i</sub>', 'ξ entre x_i y la raíz')}
+        <p>Si |g′| &lt; 1 el error se achica en cada paso (converge); si |g′| &gt; 1 crece (diverge). Si g′ &gt; 0 la aproximación se acerca de un solo lado (monótona); si g′ &lt; 0 salta de un lado al otro (oscilante, la “telaraña”). Burden lo formaliza en el teorema 2.4 del punto fijo.</p>
+        ${note('Con 2x³ + 4x − 3 = 0 (2P tema B) hay dos despejes posibles. g(x) = (3 − 2x³)/4 tiene g′(raíz) ≈ −0,59: converge oscilando, lento. g(x) = ∛((3 − 4x)/2) tiene g′(raíz) ≈ −1,70: diverge. Mismo problema, distinto despeje, distinto resultado. Por eso se elige la g mirando |g′|.', 'tip')}
+        <h3>Newton Raphson: cuadrático</h3>
+        ${eq(`E<sub>t,i+1</sub> = −${frac('f″(x<sub>r</sub>)', '2 f′(x<sub>r</sub>)')} E<sub>t,i</sub>²`, 'Chapra, ec. 6.13')}
+        ${table(['Iteración (2P tema B, x₀ = 1)', 'x<sub>i+1</sub>', 'Error verdadero |x<sub>i+1</sub> − x<sub>r</sub>|', 'E<sub>i+1</sub> / E<sub>i</sub>²'], [
+          ['1', '0,7', '7,3 × 10⁻²', '—'], ['2', '0,629971', '3,1 × 10⁻³', '0,58'], ['3', '0,626851', '5,8 × 10⁻⁶', '0,59'], ['4', '0,6268452758', '2,0 × 10⁻¹¹', '0,59'],
+        ])}
+        <p>El cociente se estabiliza en f″/(2f′) = 12x<sub>r</sub>/(2(6x<sub>r</sub>² + 4)) ≈ 0,59, como predice la fórmula, y las cifras correctas pasan de 1 a 2, 5 y 10.</p>
+        <p>Las <strong>desventajas</strong> (Chapra, sección 6.2.2): divide por f′, así que falla si f′(x<sub>i</sub>) ≈ 0 (máximos y mínimos locales); un punto de inflexión cerca de la raíz lo hace diverger; puede oscilar alrededor de un extremo o saltar a otra raíz lejana; y con raíces múltiples su convergencia baja a lineal (sección 6.4). Además hay que calcular la derivada, que no siempre es fácil.</p>
+        <h3>Secante: superlineal</h3>
+        <p>Reemplaza f′ por la pendiente entre los dos últimos puntos, así que no necesita derivar. Su orden es aproximadamente 1,62 (entre lineal y cuadrático): en el 2P tema B, con x₋₁ = 0 y x₀ = 1, los errores verdaderos son 1,3·10⁻¹; 2,7·10⁻²; 2,0·10⁻³; 3,2·10⁻⁵; 3,8·10⁻⁸. Chapra (sección 6.3.3) propone también la <strong>secante modificada</strong>, que usa un solo valor y una perturbación δ: f′ ≈ [f(x<sub>i</sub> + δx<sub>i</sub>) − f(x<sub>i</sub>)]/(δx<sub>i</sub>).</p>
+        ${note('Diferencia con la regla falsa (Chapra 6.3.1): las dos fórmulas son iguales, pero la regla falsa elige qué punto reemplazar mirando el signo (la raíz sigue encerrada) y la secante reemplaza siempre el más viejo. Por eso la secante puede diverger y la regla falsa no.', '')}
+        <h2>¿Cuál es el mejor método abierto?</h2>
+        ${note('Respuesta modelo (2P 2025 A): “Los métodos abiertos necesitan uno (punto fijo, Newton) o dos (secante) valores iniciales que no tienen por qué encerrar la raíz; no garantizan convergencia, pero cuando convergen son mucho más rápidos que los cerrados. Punto fijo despeja x = g(x) e itera x<sub>i+1</sub> = g(x<sub>i</sub>); converge si |g′(x)| &lt; 1, con convergencia lineal. Newton Raphson traza la tangente en (x<sub>i</sub>, f(x<sub>i</sub>)) y toma su corte con el eje: x<sub>i+1</sub> = x<sub>i</sub> − f(x<sub>i</sub>)/f′(x<sub>i</sub>); converge cuadráticamente, pero necesita la derivada y falla si f′ ≈ 0. La secante aproxima la derivada con los dos últimos puntos: x<sub>i+1</sub> = x<sub>i</sub> − f(x<sub>i</sub>)(x<sub>i−1</sub> − x<sub>i</sub>)/(f(x<sub>i−1</sub>) − f(x<sub>i</sub>)); es casi tan rápida como Newton y no necesita derivar. El mejor es Newton Raphson por su convergencia cuadrática, siempre que la derivada sea sencilla y x₀ esté cerca de la raíz; si la derivada es difícil de calcular, la secante.”', 'exam')}
+        ${lab(0)}`,
+      labs: [{ type: 'roots', fn: 'pxa', method: 'nr', methods: ['nr', 'sec'], title: 'Newton y secante en el 2P tema A', intro: 'f(x) = 3x³ + 2x − 4. Con Newton desde x₀ = 1 hacen falta 2 iteraciones para ε_a < 1 %. Cambiá a la secante (x₋₁ = 0, x₀ = 1) y compará; después probá un x₀ cerca de 0, donde la tangente es casi horizontal.' }],
+      quiz: [
+        { q: 'En convergencia cuadrática, si un error es 10⁻³, el siguiente es del orden de…', o: ['10⁻³', '10⁻⁴', '10⁻⁶', '10⁻⁹'], a: 2, e: 'E_{i+1} ∝ E_i².' },
+        { q: 'El punto fijo converge si…', o: ['|g′(x)| < 1 cerca de la raíz', 'g′(x) > 1', 'f′(x) = 0', 'f cambia de signo'], a: 0, e: 'E_{i+1} = g′(ξ) E_i.' },
+        { q: 'Si −1 < g′ < 0 cerca de la raíz, el punto fijo…', o: ['diverge', 'converge oscilando', 'converge de un solo lado', 'converge cuadráticamente'], a: 1, e: 'El signo negativo hace saltar de un lado al otro.' },
+        { q: 'Newton Raphson pierde la convergencia cuadrática cuando…', o: ['la raíz es simple', 'la raíz es múltiple', 'f es un polinomio', 'x₀ está cerca'], a: 1, e: 'Chapra 6.4: con raíces múltiples f′ también se anula en la raíz.' },
+        { q: 'La secante se prefiere a Newton cuando…', o: ['se quiere garantizar la convergencia', 'la derivada es difícil o costosa de calcular', 'hay una sola iteración', 'f no cambia de signo'], a: 1, e: 'Aproxima f′ con dos puntos.' },
+        { q: 'Una particularidad de los métodos abiertos es que…', o: ['siempre convergen', 'no necesitan que los valores iniciales encierren la raíz', 'necesitan f(a)·f(b) < 0', 'son más lentos que los cerrados'], a: 1, e: 'Y por eso pueden diverger.' },
+      ],
+      sources: [
+        { title: 'Métodos numéricos para ingenieros', ref: 'Chapra y Canale, 5ª ed., capítulo 6', points: ['Definición de métodos abiertos y comparación con los cerrados.', 'Cuadro 6.1: E_{i+1} = g′(ξ)E_i (convergencia lineal del punto fijo).', 'Ec. 6.13: convergencia cuadrática de Newton; 6.2.2 desventajas; 6.4 raíces múltiples.', '6.3.1 secante contra falsa posición; 6.3.3 secante modificada.'] },
+        { title: 'Análisis numérico', ref: 'Burden, Faires y Burden, 10ª ed., secciones 2.2 a 2.4', points: ['Teorema 2.4 (punto fijo).', 'Definición de orden de convergencia α; convergencia lineal y cuadrática.'] },
+      ],
+    },
   );
 })();

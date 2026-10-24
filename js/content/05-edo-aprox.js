@@ -118,5 +118,51 @@
       ],
       sources: [{ title: 'Apunte: Métodos de Runge Kutta', ref: 'Cátedra de Matemática Superior', points: ['Forma general con función incremento.', 'RK3 (error O(h⁴)) y RK4 clásico.'] }],
     },
+
+    {
+      id: 'edo-errores',
+      module: 'u4',
+      title: 'A fondo: pendientes, orden del error y elección del paso h',
+      keywords: 'error local global orden truncamiento redondeo paso h pequeño grande pendiente euler heun polígono runge kutta qué ecuaciones resuelven chapra burden error total',
+      tldr: 'Todos los métodos de un paso hacen y<sub>i+1</sub> = y<sub>i</sub> + φ·h y se diferencian en <mark>cómo estiman la pendiente φ</mark>. Un método de orden n tiene error local O(h<sup>n+1</sup>) y global O(hⁿ): Euler O(h²) y O(h); Heun y polígono O(h³) y O(h²). Achicar h reduce el error de truncamiento, pero no conviene llevarlo a un extremo: crece el número de pasos y el error de redondeo.',
+      goals: ['Comparar cómo calcula la pendiente cada método.', 'Distinguir error local y global y su orden.', 'Justificar la elección de h (pregunta clásica del parcial).', 'Decir qué ecuaciones resuelven los métodos aproximados.'],
+      body: `
+        <h2>La pendiente: lo único que cambia</h2>
+        ${eq('y<sub>i+1</sub> = y<sub>i</sub> + φ h &nbsp;&nbsp; (nuevo valor = valor anterior + pendiente × tamaño de paso)', 'Forma general (Chapra, ec. 25.1)')}
+        ${table(['Método', 'Pendiente φ usada en todo el intervalo', 'Error local', 'Error global'], [
+          ['Euler', 'La del <b>inicio</b>: f(x<sub>i</sub>, y<sub>i</sub>). Se supone constante en todo el intervalo (recta tangente)', 'O(h²)', 'O(h)'],
+          ['Heun', '<b>Promedio</b> de la pendiente al inicio y al final: [f(x<sub>i</sub>, y<sub>i</sub>) + f(x<sub>i+1</sub>, y⁰<sub>i+1</sub>)]/2, con y⁰ predicho por Euler (predictor-corrector)', 'O(h³)', 'O(h²)'],
+          ['Polígono mejorado (punto medio)', 'La del <b>punto medio</b>: f(x<sub>i+1/2</sub>, y<sub>i+1/2</sub>), con y<sub>i+1/2</sub> predicho por Euler con medio paso', 'O(h³)', 'O(h²)'],
+          ['Runge Kutta 4', 'Promedio ponderado (k₁ + 2k₂ + 2k₃ + k₄)/6 de cuatro pendientes', 'O(h⁵)', 'O(h⁴)'],
+        ])}
+        ${note('Respuesta modelo (1P 2025 A y B): “En Euler la pendiente se calcula al inicio del intervalo y se considera constante en todo el intervalo. Como la curva no es recta, eso produce un error de truncamiento. Las mejoras son Heun, que promedia la pendiente del inicio con una estimada al final (predictor-corrector), y el polígono mejorado, que usa la pendiente estimada en el punto medio. Se realizan para obtener una mejor estimación de la pendiente en el intervalo y bajar el error de O(h²) a O(h³) por paso.”', 'exam')}
+        <h2>Error local y error global</h2>
+        <p>Chapra (sección 25.1.1) separa dos cosas. El <strong>error de truncamiento local</strong> es el que comete el método en <em>un</em> paso, suponiendo que partió del valor exacto. El <strong>error de truncamiento global</strong> es el acumulado al final: además del error del último paso arrastra los de todos los anteriores, porque cada paso arranca de un valor ya aproximado.</p>
+        <p>Para Euler, el error local sale del primer término descartado de Taylor, f′(x<sub>i</sub>, y<sub>i</sub>) h²/2!, y es O(h²). Como para llegar de x₀ a x<sub>f</sub> hacen falta (x<sub>f</sub> − x₀)/h pasos, se acumulan del orden de (1/h)·h² = h: el global es O(h). La regla general de Chapra: “un método de n-ésimo orden dará resultados perfectos si la solución de la EDO es un polinomio de n-ésimo grado. Además, el error de truncamiento local será O(h<sup>n+1</sup>) y el global, O(hⁿ)”.</p>
+        ${table(['Si h se divide por 2…', 'Euler (orden 1)', 'Heun o polígono (orden 2)', 'RK4 (orden 4)'], [['el error local se divide por', '4', '8', '32'], ['el error global se divide por', '2', '4', '16']])}
+        ${note('Consecuencias que Chapra saca para Euler: 1) se puede reducir el error disminuyendo h; 2) si la solución es una recta (segunda derivada nula), Euler es exacto. Del mismo modo, Heun es exacto si la solución es una parábola: por eso en el 1P 2025 B (dy/dx cúbica, solución de grado 4) el polígono no da exacto.', 'tip')}
+        <h2>¿h muy pequeño o muy grande?</h2>
+        <p>Muy grande, nunca: el error de truncamiento crece con h y el método puede hasta cambiar el comportamiento de la solución. En el 1P 2024 (tema 2), Heun con h = 0,6 da y(2,8) ≈ 8,45 cuando el valor verdadero es ≈ 3,42.</p>
+        <p>Pero tampoco “lo más chico posible”. Burden (sección 5.2, teorema 5.10) incluye el redondeo δ de cada operación y obtiene una cota del error del tipo</p>
+        ${eq(`E(h) = ${frac('h M', '2')} + ${frac('δ', 'h')} &nbsp;&nbsp; ⟹ &nbsp;&nbsp; mínimo en h = √(2δ/M)`, 'Truncamiento + redondeo (Burden 5.2)')}
+        ${h.chart({ x: [0, 1], y: [0, 2.2], xl: 'h', yl: 'error', ticks: { x: [0.25, 0.5, 0.75] }, curves: [{ f: (x) => x, cls: 'c-tan', dash: true, label: 'truncamiento' }, { f: (x) => 0.03 / x, cls: 'c-s', dash: true, label: 'redondeo', at: 0.04 }, { f: (x) => x + 0.03 / x, cls: 'c-root', label: 'error total' }], points: [{ x: Math.sqrt(0.03), y: 2 * Math.sqrt(0.03), cls: 'c-root', label: 'h óptimo', pos: 'se' }] }, 'El truncamiento baja con h, el redondeo sube al hacer más pasos. El error total tiene un mínimo (Chapra 4.3 lo llama punto de rendimientos decrecientes).')}
+        <p>Chapra (sección 4.3, error numérico total) llega a lo mismo: al achicar h el error de truncamiento disminuye, pero aumentan los cálculos y con ellos el redondeo. <strong>Respuesta para el parcial</strong>: conviene un h pequeño, porque el error de truncamiento es proporcional a una potencia de h, pero sin exagerar: más pasos significan más tiempo de cálculo y más error de redondeo. En la práctica se resuelve con h y con h/2 y se comparan: si casi no cambia, el paso alcanza.</p>
+        <h2>¿Qué ecuaciones resuelven?</h2>
+        <p>Ecuaciones diferenciales <strong>ordinarias de primer orden con valor inicial</strong>: dy/dx = f(x, y), y(x₀) = y₀. No hace falta que sean lineales ni de coeficientes constantes: esa es su gran ventaja frente a Laplace. Lo que entregan no es una fórmula de y sino una <strong>tabla de valores</strong> aproximados. Las de orden superior se reescriben como un sistema de ecuaciones de primer orden y se aplica el mismo método a cada una (Chapra, sección 25.4).</p>
+        ${lab(0)}`,
+      labs: [{ type: 'ode', problem: 'a2', h: 1, methods: ['E', 'H', 'P'], title: 'Probá h grande y h chico', intro: 'Empezá con h = 1 y bajalo de a mitades. Mirá cuánto se acerca cada método a la referencia: Euler mejora de a la mitad; Heun y el polígono, de a un cuarto.' }],
+      quiz: [
+        { q: 'En Euler, la pendiente usada en todo el intervalo es…', o: ['el promedio inicio-final', 'la del inicio del intervalo', 'la del punto medio', 'la del final'], a: 1, e: 'Se supone constante e igual a f(x_i, y_i).' },
+        { q: 'El error de truncamiento local de Heun es…', o: ['O(h)', 'O(h²)', 'O(h³)', 'O(h⁵)'], a: 2, e: 'Es de segundo orden: local O(h³), global O(h²).' },
+        { q: 'Si con Euler se divide h por 2, el error global al final…', o: ['se divide por 4', 'se divide por 2', 'no cambia', 'se duplica'], a: 1, e: 'Global O(h).' },
+        { q: '¿Por qué no conviene tomar h extremadamente pequeño?', o: ['Porque el método diverge', 'Porque crece el número de operaciones y el error de redondeo', 'Porque el error de truncamiento aumenta', 'Porque cambia el orden del método'], a: 1, e: 'Burden 5.2: E(h) = hM/2 + δ/h tiene un mínimo.' },
+        { q: 'Los métodos de un paso de la Unidad 4 resuelven…', o: ['solo ecuaciones lineales', 'EDO de primer orden con valor inicial, lineales o no', 'solo ecuaciones de segundo orden', 'ecuaciones en derivadas parciales'], a: 1, e: 'No necesitan linealidad.' },
+        { q: 'Heun es exacto cuando la solución verdadera es…', o: ['una recta solamente', 'un polinomio de grado ≤ 2', 'una exponencial', 'nunca'], a: 1, e: 'Método de orden 2 (Chapra 25.1.1).' },
+      ],
+      sources: [
+        { title: 'Métodos numéricos para ingenieros', ref: 'Chapra y Canale, 5ª ed., secciones 4.3, 25.1 y 25.2', points: ['Forma general y_{i+1} = y_i + φh (ec. 25.1).', 'Error local O(h²) y global O(h) de Euler; un método de orden n tiene local O(h^{n+1}) y global O(hⁿ).', 'Heun como predictor-corrector y método del punto medio (polígono mejorado), ambos de segundo orden.', 'Error numérico total: compromiso entre truncamiento y redondeo.'] },
+        { title: 'Análisis numérico', ref: 'Burden, Faires y Burden, 10ª ed., sección 5.2', points: ['Teorema 5.9: cota del error global de Euler, proporcional a h.', 'Teorema 5.10: con redondeo δ el error se acota por hM/2 + δ/h; h óptimo = √(2δ/M).'] },
+      ],
+    },
   );
 })();

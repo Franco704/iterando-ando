@@ -98,5 +98,67 @@
       ],
       sources: [{ title: 'Clase: Función de Transferencia', ref: 'Cátedra de Matemática Superior', points: ['TP 4, 2a y 3d resueltos con residuos.'] }],
     },
+
+    {
+      id: 'ft-teoria',
+      module: 'u3',
+      title: 'A fondo: condiciones, invariancia en el tiempo e importancia',
+      keywords: 'función de transferencia teoría condiciones iniciales cero invariante en el tiempo lineal superposición importancia de qué depende la respuesta verdadero falso estabilidad bloques en serie',
+      tldr: 'La función de transferencia existe solo para sistemas <mark>lineales, invariantes en el tiempo y con condiciones iniciales cero</mark>. Con esas tres condiciones, Y(s)/U(s) no depende de la entrada: es una propiedad del sistema. La respuesta y(t) depende de los polos y ceros de P(s) <strong>y</strong> de los de la entrada U(s).',
+      goals: ['Justificar cada una de las tres condiciones.', 'Explicar qué significa “invariante en el tiempo”.', 'Responder los verdadero o falso de los parciales sobre la función de transferencia.'],
+      body: `
+        <h2>Las tres condiciones y qué pasa si falta una</h2>
+        ${table(['Condición', 'Qué significa', 'Si no se cumple…'], [
+          ['Lineal', 'Vale la superposición: si u₁ → y₁ y u₂ → y₂, entonces a u₁ + b u₂ → a y₁ + b y₂', 'La transformada no pasa a través de los términos no lineales (y², sen y): no se puede despejar Y(s) como P(s)·U(s)'],
+          ['Invariante en el tiempo', 'Los coeficientes de la ecuación diferencial son constantes: el sistema responde igual hoy que mañana', 'Un coeficiente que depende de t (como t·y′) no se transforma en (constante)·sY: P quedaría dependiendo de t'],
+          ['Condiciones iniciales cero', 'El sistema arranca “en reposo”: y(0) = y′(0) = … = 0 y u(0) = … = 0', 'Y(s) = P(s)U(s) + (términos de las condiciones iniciales): el cociente Y/U pasa a depender de la entrada'],
+        ])}
+        <h2>Invariancia en el tiempo</h2>
+        <p>Un sistema es <strong>invariante en el tiempo</strong> si un retardo en la entrada produce el mismo retardo en la salida y nada más: si la entrada u(t) produce y(t), la entrada u(t − τ) produce y(t − τ). En una ecuación diferencial eso ocurre cuando los coeficientes a<sub>n</sub>, …, a₀ y b<sub>m</sub>, …, b₀ son <strong>constantes</strong>. Es la condición que permite transformar cada a<sub>k</sub> y⁽ᵏ⁾ en a<sub>k</sub> sᵏ Y(s) y sacar Y(s) factor común.</p>
+        ${note('Pregunta del 1P 2024 (tema 1): “En función de transferencia, para trabajar con Laplace, ¿qué significa que las ecuaciones diferenciales sean invariantes en el tiempo?”. Respuesta: que sus coeficientes son constantes (no dependen de t), de modo que el comportamiento del sistema no cambia con el instante en que se aplica la entrada; solo así el cociente Y(s)/U(s) es un polinomio sobre otro, fijo para el sistema.', 'exam')}
+        <h2>¿Por qué condiciones iniciales cero?</h2>
+        <p>El apunte lo muestra con la forma completa: Y(s) = P(s) U(s) + (términos debidos a los valores iniciales u<sub>0</sub><sup>k</sup>, y<sub>0</sub><sup>k</sup>). Solo si esos términos son cero queda Y(s) = P(s)U(s). Con y(0) = 1, por ejemplo, Y/U = P + 1/U·(algo): cambia con cada entrada y deja de describir al sistema.</p>
+        ${table(['Afirmación de parcial', 'V/F', 'Justificación'], [
+          ['La función de transferencia relaciona la transformada de Laplace de la entrada de un sistema con la transformada de Laplace de la salida', '<b>V</b>', 'Es su definición: P(s) = Y(s)/U(s), con condiciones iniciales cero'],
+          ['Se puede obtener la función de transferencia a partir de las ecuaciones diferenciales de entrada y salida con tan solo una condición inicial distinta de cero', '<b>F</b>', 'Todas las condiciones iniciales deben ser cero; con una sola distinta de cero aparece un término extra y Y/U depende de la entrada'],
+          ['La función de transferencia depende de la entrada aplicada', '<b>F</b>', 'Depende solo de los coeficientes de la ecuación (del sistema)'],
+          ['La respuesta y(t) depende solo de los polos de P(s)', '<b>F</b>', 'Depende de los polos y ceros de P(s) y de los de U(s)'],
+        ])}
+        <h2>¿De qué depende la respuesta en el tiempo?</h2>
+        ${def('Respuesta en el tiempo', 'y(t) = ℒ⁻¹{P(s) U(s)} es la respuesta de tiempo y puede determinarse encontrando los polos de P(s) U(s). En consecuencia y(t) depende tanto de los polos y ceros de la función de transferencia como de los polos y ceros de la entrada.', 'Apunte de la cátedra, Función de Transferencia.')}
+        <p>En la expansión en fracciones simples de P(s)U(s):</p>
+        <ul>
+          <li>Los <strong>polos de la entrada</strong> dan la <strong>respuesta forzada</strong>: con una rampa (U = 1/s², polo doble en 0) aparecen un término constante y uno en t; con un escalón, solo una constante.</li>
+          <li>Los <strong>polos del sistema</strong> dan la <strong>respuesta natural o transitoria</strong>: exponenciales y oscilaciones cuya forma depende solo de P(s).</li>
+          <li>Los <strong>ceros</strong> (de P y de U) no agregan términos, pero cambian el tamaño de cada residuo. Un cero que coincide con un polo lo cancela.</li>
+        </ul>
+        ${note('Ejemplo del 1P 2024 (tema 2): P(s) = (3s − 4)/(s² − 2s − 3) tiene polos −1 y <b>3</b>. Con la rampa, y(t) = (4/3)t − 17/9 + (7/4)e<sup>−t</sup> + (5/36)e<sup>3t</sup>: el polo positivo hace crecer la salida sin límite. Es un sistema <strong>inestable</strong>, y eso lo dicen los polos de P(s), no la entrada.', 'tip')}
+        <h2>¿Por qué es importante?</h2>
+        <ul>
+          <li>Cualquier sistema lineal invariante (eléctrico, mecánico, informático) queda representado por un único cociente de polinomios, sin importar qué entrada se le aplique.</li>
+          <li>Permite estudiar la salida Y(s) para <strong>distintas entradas</strong> (escalón, rampa, impulso) con solo multiplicar.</li>
+          <li>Los polos dicen, sin resolver nada, si el sistema es estable (todos con parte real negativa), si oscila (complejos) y qué tan rápido responde.</li>
+          <li>Sistemas en cadena se combinan multiplicando: si la salida de P₁ es la entrada de P₂, la función de transferencia total es P₁(s)·P₂(s).</li>
+        </ul>
+        ${lab(0)}`,
+      labs: [{ type: 'classify', title: '¿Se puede definir P(s)?', buckets: ['Sí', 'No'], items: [
+        { t: 'y″ + 6y′ + 10y = 5u′ + 15u, condiciones iniciales cero', b: 0, why: 'Lineal, coeficientes constantes, en reposo.' },
+        { t: 'y″ + 6y′ + 10y = 5u′ + 15u, con y(0) = 1', b: 1, why: 'Una condición inicial distinta de cero alcanza para romper la definición.' },
+        { t: 'y″ + t·y′ + y = u', b: 1, why: 'Coeficiente que depende de t: no es invariante en el tiempo.' },
+        { t: 'y′ + y² = u', b: 1, why: 'No lineal.' },
+        { t: 'y‴ + 2y″ + y = u″ − u, condiciones iniciales cero', b: 0, why: 'El orden no importa.' },
+      ] }],
+      quiz: [
+        { q: '“Invariante en el tiempo” significa que…', o: ['la salida es constante', 'los coeficientes de la ecuación diferencial son constantes', 'la entrada no cambia', 'las condiciones iniciales son cero'], a: 1, e: 'Un retardo en la entrada solo retarda la salida.' },
+        { q: 'Con una condición inicial distinta de cero, Y(s)/U(s)…', o: ['sigue siendo P(s)', 'depende también de la entrada', 'vale cero', 'es igual a la condición inicial'], a: 1, e: 'Aparecen términos extra que no son proporcionales a U(s).' },
+        { q: 'La respuesta y(t) depende de…', o: ['solo los polos de P(s)', 'solo la entrada', 'los polos y ceros de P(s) y de U(s)', 'solo los ceros'], a: 2, e: 'Apunte de la cátedra.' },
+        { q: 'Los polos de la entrada producen…', o: ['la respuesta natural', 'la respuesta forzada', 'la inestabilidad', 'nada'], a: 1, e: 'Por ejemplo, el término constante con el escalón.' },
+        { q: 'Si P(s) tiene un polo en s = 2, para cualquier entrada acotada…', o: ['la salida se apaga', 'aparece un término e^(2t) que crece', 'la salida es constante', 'no hay respuesta'], a: 1, e: 'Sistema inestable (salvo que el residuo justo dé cero).' },
+      ],
+      sources: [
+        { title: 'Apunte: Función de Transferencia', ref: 'Cátedra de Matemática Superior', points: ['Y(s) = P(s)U(s) + términos de los valores iniciales; con condiciones nulas, Y(s) = P(s)U(s).', 'y(t) depende de los polos y ceros de P(s) y de U(s).'] },
+        { title: 'Resumen y preguntas del 1er parcial', ref: 'Material de la cátedra', points: ['Se aplica a ecuaciones lineales, invariantes en el tiempo y con condiciones iniciales cero.', 'Importancia: estudiar las salidas según las entradas y comprender la naturaleza del sistema.'] },
+      ],
+    },
   );
 })();

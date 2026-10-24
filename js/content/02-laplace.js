@@ -207,5 +207,64 @@
       ],
       sources: [{ title: 'Clase: EDO con Laplace', ref: 'Cátedra de Matemática Superior', points: ['Cálculo de residuos R y coeficientes A para polos múltiples con derivadas.'] }],
     },
+
+    {
+      id: 'laplace-teoria',
+      module: 'u2',
+      title: 'A fondo: la teoría de Laplace que se toma en el parcial',
+      keywords: 'teoría propiedades transformada qué ecuaciones resuelve lineales coeficientes constantes existencia orden exponencial polo residuo múltiple parcial',
+      tldr: 'Casi todos los 1er parciales preguntan lo mismo: <mark>qué propiedades conocés y qué ecuaciones resuelve Laplace</mark>. Respuesta corta: suma algebraica, linealidad, traslación y transformada de las derivadas; resuelve ecuaciones diferenciales <strong>ordinarias, lineales y de coeficientes constantes</strong>, de cualquier orden, con sus condiciones iniciales. No resuelve “cualquier” ecuación: las no lineales quedan afuera.',
+      goals: ['Responder con precisión las preguntas teóricas de la Unidad 2.', 'Justificar por qué Laplace no sirve para ecuaciones no lineales.', 'Definir polo y escribir la fórmula de residuos múltiples.'],
+      body: `
+        <h2>Las propiedades, con su “para qué”</h2>
+        ${table(['Propiedad', 'Enunciado', 'Para qué sirve'], [
+          ['Suma algebraica', 'ℒ{f₁ ± f₂} = F₁ ± F₂', 'Transformar término a término'],
+          ['Linealidad', 'ℒ{c₁f₁ + c₂f₂} = c₁F₁ + c₂F₂ (también para ℒ⁻¹)', 'Sacar las constantes afuera; ajustar constantes en la inversa'],
+          ['Traslación (en s)', 'ℒ{e<sup>at</sup> f(t)} = F(s − a)', 'Exponencial por seno, coseno, senh, cosh o potencia; completar cuadrados en la inversa'],
+          ['Derivadas', 'ℒ{f′} = sF − f(0); ℒ{f″} = s²F − s f(0) − f′(0); ℒ{f⁽ⁿ⁾} = sⁿF − sⁿ⁻¹f(0) − … − f⁽ⁿ⁻¹⁾(0)', 'Convierte la ecuación diferencial en algebraica e incorpora las condiciones iniciales'],
+        ])}
+        ${note('Lo que <strong>no</strong> es una propiedad: la transformada de un producto no es el producto de las transformadas. ℒ{t · sen t} ≠ ℒ{t} · ℒ{sen t}. Por eso solo e<sup>at</sup> “sale” de un producto, y lo hace como traslación.', 'warn')}
+        <h2>¿Qué ecuaciones resuelve?</h2>
+        ${def('Respuesta de la cátedra', 'Resuelven ecuaciones diferenciales de cualquier orden pero solo lineales.', 'Preguntas de Matemática Superior, 1er cuatrimestre (material de la cátedra).')}
+        <p>Para que el método funcione de punta a punta tienen que pasar tres cosas, y cada una explica una restricción:</p>
+        ${flow('Cada término tiene que transformarse en algo con Y(s): solo pasa si y, y′, y″ aparecen sumados y multiplicados por constantes', 'Al despejar, Y(s) tiene que quedar como cociente de polinomios en s', 'Ese cociente tiene que invertirse con tabla, propiedades y fracciones simples')}
+        ${table(['Ecuación', '¿Laplace?', 'Por qué'], [
+          ['y″ + 7y′ + 12y = t', 'Sí', 'Ordinaria, lineal, coeficientes constantes'],
+          ['y″ − 3y′ − 4y = e<sup>−2t</sup> + 4e<sup>t</sup>', 'Sí', 'El segundo miembro solo tiene que tener transformada; puede ser cualquier función de t'],
+          ['y′ + y² = 0', 'No', 'No lineal: ℒ{y²} no se puede escribir en función de Y(s)'],
+          ['y″ + sen y = 0 (péndulo)', 'No', 'No lineal; Chapra (PT7.1) muestra que se linealiza con sen y ≈ y o se resuelve numéricamente'],
+          ['∂u/∂t = ∂²u/∂x²', 'No directamente', 'Es una ecuación en derivadas parciales'],
+        ])}
+        <p>Chapra lo plantea desde el otro lado (PT7.1): “la importancia práctica de las EDO lineales es que se resuelven analíticamente. En cambio, la mayoría de las ecuaciones no lineales no pueden resolverse de manera exacta”. Para esas están los <a href="#/euler">métodos aproximados</a> de la Unidad 4.</p>
+        ${note('Pregunta del 1P 2024 (tema 2): “¿Con la Transformada de Laplace se puede resolver cualquier tipo de ecuación diferencial? Explique”. Respuesta: <strong>no</strong>. Solo las ordinarias lineales (con coeficientes constantes, que son las que se ven en la materia); además, el segundo miembro y la solución tienen que tener transformada. Las no lineales se resuelven con métodos numéricos.', 'exam')}
+        <h2>¿Cuándo existe la transformada?</h2>
+        <p>La integral ∫₀^∞ e<sup>−st</sup> f(t) dt converge si f es <strong>continua por tramos</strong> (un número finito de saltos finitos en cada intervalo) y de <strong>orden exponencial</strong>: |f(t)| ≤ M e<sup>ct</sup> para t grande. Así, para s &gt; c, el factor e<sup>−st</sup> le gana a f. Todas las funciones de la tabla cumplen (polinomios, exponenciales, senos, cosenos, hiperbólicas). Una que no: e<sup>t²</sup>, que crece más rápido que cualquier exponencial.</p>
+        <h2>Polos y residuos múltiples</h2>
+        ${def('Polo', 'En una función racional F(s) = p(s)/q(s), con q(s) = (s − s₁)(s − s₂)…(s − s<sub>n</sub>), los valores s₁, s₂, …, s<sub>n</sub> se denominan polos de la función.', 'Resumen de la cátedra, Expansión en fracciones parciales.')}
+        <p>Son los valores de s que anulan el denominador y hacen que F(s) tienda a infinito. Los <strong>ceros</strong>, en cambio, anulan el numerador. Para un polo simple el residuo es R = [(s − p) F(s)]<sub>s=p</sub>. Para un <strong>polo de multiplicidad m</strong>:</p>
+        ${eq(`F(s) = ${frac('A₁', 's − p')} + ${frac('A₂', '(s − p)²')} + … + ${frac('A<sub>m</sub>', '(s − p)<sup>m</sup>')} + … &nbsp;&nbsp; A<sub>m−k</sub> = ${frac('1', 'k!')} ${frac('d<sup>k</sup>', 'ds<sup>k</sup>')} [(s − p)<sup>m</sup> F(s)]<sub>s=p</sub>`, 'Residuos múltiples, k = 0, 1, …, m − 1')}
+        <p>Y cada término vuelve al tiempo con la tabla y la traslación: A<sub>j</sub>/(s − p)<sup>j</sup> → A<sub>j</sub> t<sup>j−1</sup> e<sup>pt</sup>/(j − 1)!.</p>
+        ${lab(0)}`,
+      labs: [{ type: 'classify', title: '¿Se resuelve con Laplace?', buckets: ['Sí', 'No'], items: [
+        { t: 'y″ + 5y′ + 6y = 3e<sup>t</sup> + e<sup>2t</sup>', b: 0, why: 'Lineal y de coeficientes constantes (1P 2024, tema 2).' },
+        { t: 'y y′ = 1', b: 1, why: 'Producto de y por su derivada: no lineal.' },
+        { t: 'y‴ − y = 8 cosh t', b: 0, why: 'Cualquier orden sirve si es lineal.' },
+        { t: '(y′)² + y = 0', b: 1, why: 'Derivada al cuadrado: no lineal.' },
+        { t: 'y″ + 4y = sen 2t', b: 0, why: 'Lineal; aparece un polo doble ±2i (resonancia).' },
+        { t: 'y′ = e<sup>y</sup>', b: 1, why: 'Función trascendente de la variable dependiente.' },
+      ] }],
+      quiz: [
+        { q: 'La transformada de Laplace resuelve directamente ecuaciones diferenciales…', o: ['de primer orden solamente', 'ordinarias lineales de cualquier orden', 'no lineales de segundo orden', 'en derivadas parciales'], a: 1, e: 'Respuesta de la cátedra: cualquier orden, pero solo lineales.' },
+        { q: '¿Por qué Laplace no sirve para y′ + y² = 0?', o: ['Porque es de primer orden', 'Porque ℒ{y²} no se expresa en función de Y(s)', 'Porque no tiene condiciones iniciales', 'Porque e^(−st) no converge'], a: 1, e: 'La transformada no “pasa” a través de productos ni potencias de y.' },
+        { q: 'ℒ{t · cos t} = ℒ{t} · ℒ{cos t}…', o: ['Verdadero', 'Falso'], a: 1, e: 'La transformada de un producto no es el producto de transformadas.' },
+        { q: 'Un polo de F(s) es…', o: ['una raíz del numerador', 'una raíz del denominador', 'el coeficiente principal', 'un valor de t'], a: 1, e: 'Donde F(s) → ∞.' },
+        { q: 'Para un polo triple, el coeficiente de 1/(s − p) se calcula con…', o: ['ninguna derivada', 'una derivada', 'la segunda derivada dividida por 2!', 'la tercera derivada'], a: 2, e: 'k = 2: (1/2!) d²/ds²[(s − p)³F(s)] en s = p.' },
+        { q: 'e^(t²) no tiene transformada de Laplace porque…', o: ['no es continua', 'no es de orden exponencial', 'es par', 'vale 1 en t = 0'], a: 1, e: 'Crece más rápido que cualquier e^(ct).' },
+      ],
+      sources: [
+        { title: 'Resumen y preguntas del 1er parcial', ref: 'Material de la cátedra (carpeta Parciales)', points: ['Propiedades: suma algebraica, linealidad, linealidad de la inversa, traslación y transformada de las derivadas.', '“Resuelven ecuaciones diferenciales de cualquier orden pero solo lineales.”', 'Definición de polo en la expansión en fracciones parciales.'] },
+        { title: 'Métodos numéricos para ingenieros', ref: 'Chapra y Canale, 5ª ed., PT7.1', points: ['Las EDO lineales se resuelven analíticamente; la mayoría de las no lineales, no.', 'Linealización del péndulo (sen θ ≈ θ) y la alternativa numérica.'] },
+      ],
+    },
   );
 })();
