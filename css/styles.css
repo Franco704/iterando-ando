@@ -714,3 +714,7 @@ span.neg { color: var(--err); font-weight: 600; } span.pos { color: var(--ok); f
 .exam-q > summary { cursor: pointer; font-weight: 600; line-height: 1.45; }
 .exam-q > summary small { color: var(--muted); font-weight: 400; }
 .exam-q .exercise { margin-top: 10px; }
+
+/* Otras guías agrupadas por año de la carrera */
+.also-y { font-size: .95rem; font-weight: 700; margin: 18px 0 8px; opacity: .75; }
+.also-h + .also-y { margin-top: 4px; }
