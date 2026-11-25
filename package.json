@@ -1,0 +1,6 @@
+{
+  "name": "iterando-ando",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node tests/metodos.test.js && node tests/contenido.test.js" }
+}

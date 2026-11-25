@@ -1,0 +1,116 @@
+/* Laboratorios: base, controles, genéricos (clasificar, ordenar, calculadora) y los de gráficas. */
+/* ---------- Laboratorios (base) ---------- */
+.lab { margin: 2em 0; border: 1px solid var(--linea); border-radius: 12px; background: var(--superficie); box-shadow: var(--sombra); overflow: hidden; font-family: var(--f-ui); }
+.lab-head { display: flex; align-items: baseline; gap: 10px; padding: 14px 18px 0; flex-wrap: wrap; }
+.lab-kind { font-weight: 700; font-size: .78rem; color: var(--acento-tinta); background: var(--acento-suave); padding: 3px 9px; border-radius: 99px; }
+.lab-title { margin: 0 !important; font-size: 1.02rem !important; }
+.lab-intro { font-size: .95rem; line-height: 1.55; color: var(--tinta-2); padding: 0 18px; margin: 8px 0 0 !important; max-width: none !important; }
+.lab-body { padding: 14px 18px 18px; font-size: .93rem; line-height: 1.5; }
+.lab-body p { max-width: none; }
+.lab-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+.lab-out { font: 400 .82rem/1.6 var(--f-mono); background: var(--codigo-fondo); color: var(--codigo-tinta); border: 1px solid var(--linea); border-radius: 8px; padding: 10px 12px; white-space: pre-wrap; overflow-x: auto; margin: 0; min-height: 2.6em; }
+.lab select, .lab input[type="text"], .lab input[type="number"], .lab textarea {
+  font: 500 .9rem var(--f-ui); color: var(--tinta); background: var(--fondo); border: 1px solid var(--linea); border-radius: 7px; padding: 7px 10px; min-width: 0;
+}
+.lab textarea { font: 400 .84rem/1.55 var(--f-mono); width: 100%; resize: vertical; }
+.lab label { font-weight: 500; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 99px; font: 600 .78rem var(--f-ui); background: var(--superficie-2); color: var(--tinta-2); }
+.chip.ok { background: var(--ok-suave); color: var(--ok); }
+.chip.warn { background: var(--aviso-suave); color: var(--aviso); }
+.chip.err { background: var(--error-suave); color: var(--error); }
+.chip.acc { background: var(--acento-suave); color: var(--acento-tinta); }
+.goals-list { list-style: none; padding: 0 !important; margin: 0 0 12px !important; display: grid; gap: 4px; }
+.goals-list li { display: flex; gap: 8px; align-items: baseline; font-size: .9rem; margin: 0; }
+.goals-list li::before { content: ''; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--linea); flex: none; transform: translateY(1px); }
+.goals-list li.met { color: var(--ok); }
+.goals-list li.met::before { background: var(--ok); border-color: var(--ok); }
+
+/* =================== Laboratorios específicos =================== */
+.icon-btn.sm { width: 30px; height: 30px; border-radius: 7px; font: 600 .85rem var(--f-ui); border: 1px solid var(--linea); background: var(--superficie); }
+.icon-btn.sm:disabled { opacity: .35; cursor: default; }
+.mem-h { font: 700 .8rem var(--f-ui); color: var(--tenue); margin: 12px 0 6px !important; }
+.muted-s { color: var(--tenue); font-size: .86rem; }
+.lab-label { display: block; margin: 4px 0 6px; font-size: .9rem; }
+.lab-result { margin-top: 10px; }
+.lab-explain { margin-top: 10px; font-family: var(--f-texto); font-size: 1rem; }
+.lab-explain p { margin: 0 0 .6em; }
+.goals-list li.fail { color: var(--error); }
+.goals-list li.fail::before { border-color: var(--error); background: var(--error-suave); }
+.lab pre.code { margin-bottom: 10px; }
+.ln { display: inline-block; min-width: 100%; padding: 0 6px; margin: 0 -6px; border-radius: 4px; }
+.ln.cur { background: var(--acento-suave); box-shadow: inset 3px 0 0 var(--acento); }
+.ln.dim { opacity: .45; }
+
+/* Segmentos (radio como pestañas) */
+.seg { position: relative; }
+.seg input { position: absolute; opacity: 0; }
+.seg span { display: inline-block; padding: 6px 12px; border: 1px solid var(--linea); border-radius: 99px; font: 600 .84rem var(--f-ui); cursor: pointer; background: var(--superficie); }
+.seg input:checked + span { background: var(--acento); border-color: var(--acento); color: var(--sobre-acento); }
+.seg input:focus-visible + span { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+/* Clasificar y ordenar */
+.cls-list, .ord-list { list-style: none; padding: 0 !important; margin: 0 0 12px !important; display: grid; gap: 8px; }
+.cls-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--linea); border-radius: 8px; margin: 0; max-width: none; }
+.cls-list li.is-ok { border-color: var(--ok); background: var(--ok-suave); }
+.cls-list li.is-bad { border-color: var(--error); background: var(--error-suave); }
+.cls-why { grid-column: 1 / -1; margin: 0 !important; font-size: .87rem; color: var(--tinta-2); }
+.ord-list li { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--linea); border-radius: 8px; background: var(--superficie); margin: 0; max-width: none; }
+.ord-list li.is-ok { border-color: var(--ok); }
+.ord-list li.is-bad { border-color: var(--error); }
+.ord-n { font-weight: 700; color: var(--tenue); text-align: center; }
+.ord-btns { display: flex; gap: 4px; }
+
+/* Calculadora */
+.calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.calc-grid label { display: grid; gap: 4px; font-size: .86rem; }
+
+/* Barras de desplazamiento discretas en ambos temas */
+pre.code, .lab-out, .table-wrap, .fig { scrollbar-width: thin; scrollbar-color: var(--tenue) transparent; }
+/* ---------- Laboratorios de gráficas ---------- */
+.pl-host { max-width: 540px; margin: 0 auto; }
+.pl-host-2 { margin-top: 6px; }
+.pl-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.pl-pair .pl-host { max-width: none; margin: 0; }
+.lab-read { margin: 10px 0 4px; }
+.lab-read p { margin: 0 0 6px !important; }
+.rd { display: flex; flex-wrap: wrap; gap: 6px; }
+.rd .chip { font-weight: 500; font-variant-numeric: tabular-nums; }
+.rd .chip b { font-weight: 700; }
+.sl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px 18px; margin: 12px 0 6px; padding: 12px 14px; border-radius: 10px; background: var(--superficie-2); }
+.sl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; align-items: center; font-size: .86rem; }
+.sl-l { grid-column: 1 / -1; color: var(--tinta-2); font-weight: 600; }
+.sl input { width: 100%; accent-color: var(--acento); height: 22px; }
+.sl output { font: 700 .85rem var(--f-mono); color: var(--acento-tinta); min-width: 4.5ch; text-align: right; }
+.toggle { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.toggle button { font: 600 .85rem var(--f-ui); padding: 6px 14px; border-radius: 99px; border: 1px solid var(--linea); background: var(--superficie); color: var(--tinta-2); cursor: pointer; }
+.toggle button[aria-pressed="true"] { background: var(--acento); border-color: var(--acento); color: var(--sobre-acento); }
+.drill-n { font: 700 .78rem var(--f-ui); color: var(--tenue); margin: 0 0 4px !important; }
+.drill-t { font: 600 1.12rem/1.45 var(--f-texto); margin: 0 0 12px !important; }
+.drill-opts { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.drill-opts .is-right { background: var(--ok-suave); border-color: var(--ok); color: var(--ok); }
+.drill-opts .is-wrong { background: var(--error-suave); border-color: var(--error); color: var(--error); }
+.mm-bars { display: grid; gap: 4px; margin-bottom: 8px; }
+.mm-row { display: grid; grid-template-columns: 22px minmax(0, 1fr) 110px; gap: 8px; align-items: center; font: 500 .78rem var(--f-mono); }
+.mm-k { color: var(--tenue); text-align: right; }
+.mm-bar { position: relative; height: 14px; width: var(--w); min-width: 2px; background: var(--acento); border-radius: 3px; transition: width .35s ease; animation: barIn .6s ease both; }
+.mm-res { position: absolute; left: 0; top: 0; bottom: 0; width: var(--w); background: var(--tinta); opacity: .45; border-radius: 3px 0 0 3px; }
+.mm-v { text-align: right; color: var(--tinta-2); }
+.mm-row:nth-child(n) .mm-bar { animation-delay: calc(var(--i, 0) * 40ms); }
+@keyframes barIn { from { width: 0; } }
+
+/* Flujo circular de la renta */
+.flowc .fc-node { fill: var(--superficie-2); stroke: var(--linea); stroke-width: 1.5; }
+.flowc .fc-mkt { fill: var(--acento-suave); stroke: var(--acento); stroke-width: 1.5; }
+.flowc .fc-state { fill: var(--aviso-suave); stroke: var(--aviso); stroke-width: 1.5; }
+.flowc .fc-real { fill: none; stroke: var(--c-d); stroke-width: 2.4; }
+.flowc .fc-money { fill: none; stroke: var(--c-eq); stroke-width: 2.4; stroke-dasharray: 7 5; animation: dash 1.2s linear infinite; }
+.flowc .fc-t { font: 700 13px var(--f-ui); fill: var(--tinta); text-anchor: middle; }
+.flowc .fc-s { font: 500 10.5px var(--f-ui); fill: var(--tenue); text-anchor: middle; }
+.flowc .fc-coin { fill: var(--c-eq); }
+@keyframes dash { to { stroke-dashoffset: -24; } }
+
+/* Tarjetas de fórmulas del repaso */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 0 0 1.5em; }
+.card { padding: 12px 14px; border-radius: var(--r-2); background: var(--superficie); border: 1px solid var(--linea); border-top: 3px solid var(--acento); font-family: var(--f-ui); font-size: .92rem; line-height: 1.5; }
+.card b { display: block; font-size: .8rem; color: var(--acento-tinta); margin-bottom: 4px; }
+.card .f { font: 500 1rem var(--f-texto); }

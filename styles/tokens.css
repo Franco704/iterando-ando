@@ -1,0 +1,75 @@
+/* Iterando Ando: hoja de cálculo a mano de día, pizarrón y tiza de noche. El color solo codifica información:
+   carmín el primer parcial (del tiempo a la frecuencia), azul petróleo el segundo (métodos numéricos y Fourier),
+   y en los gráficos un color fijo por papel: función, aproximación o raíz, auxiliar g(x).
+   Schibsted Grotesk para títulos e interfaz, STIX Two Text (hecha para textos matemáticos) para leer y DM Mono para los iterados. */
+:root {
+  --fondo: #f5f5f1;
+  --superficie: #ffffff;
+  --superficie-2: #e9e9e2;
+  --tinta: #191c22;
+  --tinta-2: #3a3e48;
+  --tenue: #626672;
+  --linea: #d9d9d0;
+  --ok: #18774c; --ok-suave: #dcf0e4;
+  --aviso: #925500; --aviso-suave: #f6e8d0;
+  --error: #b8262f; --error-suave: #f9e1e2;
+  --codigo-fondo: #ecece5; --codigo-tinta: #1e2128;
+  --tok-c: #6b7088; --tok-s: #0f7a52; --tok-k: #5b2ed6; --tok-t: #0b6aa8; --tok-n: #a4400c; --tok-a: #8a5a00;
+  --sobre-acento: #fff;
+
+  /* Parciales */
+  --p1: #a8223a; --p1-suave: #f7e0e4;
+  --p2: #11618a; --p2-suave: #dceef6;
+  --acento: var(--p1); --acento-suave: var(--p1-suave); --acento-tinta: var(--p1);
+
+  /* Papeles en los gráficos: función (c-d), raíz o aproximación (c-eq), auxiliar (c-cmg) y otros */
+  --c-d: #2a5bd7; --c-s: #d23a3a; --c-eq: #d27300; --c-cmg: #7a43d4; --c-ctme: #0b8590; --c-cvme: #2f8f45; --c-cfme: #868b95; --c-x: #c42b73;
+
+  --f-titulo: 'Schibsted Grotesk', system-ui, sans-serif;
+  --f-ui: var(--f-titulo);
+  --f-texto: 'STIX Two Text', 'Cambria', Georgia, serif;
+  --f-mono: 'DM Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* Escala 1.25 sobre 18 px (la serif lee mejor un punto más grande) */
+  --t--2: .72rem; --t--1: .85rem; --t-0: 1.125rem; --t-1: 1.33rem; --t-2: 1.66rem; --t-3: 2.07rem; --t-4: clamp(2.1rem, 1.6rem + 2.6vw, 3rem); --t-5: clamp(2.6rem, 1.5rem + 5.2vw, 4.8rem);
+  --e-1: .25rem; --e-2: .5rem; --e-3: .75rem; --e-4: 1rem; --e-5: 1.5rem; --e-6: 2rem; --e-7: 3rem; --e-8: 4.5rem;
+  --r-1: 3px; --r-2: 6px; --r-3: 10px;
+  --sombra: 0 1px 0 rgba(25, 28, 34, .05), 0 12px 28px -20px rgba(25, 28, 34, .4);
+  --barra: 56px;
+  --dock: 64px;
+  --lateral: 300px;
+  --medida: 66ch;
+  --margen: 16px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --fondo: #121916; --superficie: #19211d; --superficie-2: #232e28; --tinta: #e8ece7; --tinta-2: #c6cdc7; --tenue: #96a29a; --linea: #2d3a33;
+    --ok: #55c98f; --ok-suave: #15291f; --aviso: #f0b552; --aviso-suave: #2e2513; --error: #ff7f86; --error-suave: #33181b;
+    --codigo-fondo: #0d1210; --codigo-tinta: #dfe5e0; --sobre-acento: #121916;
+    --tok-c: #8e94ad; --tok-s: #6fd3a0; --tok-k: #b69bff; --tok-t: #7cc3f0; --tok-n: #f5a46b; --tok-a: #e6c066;
+    --p1: #ff8a9c; --p1-suave: #3a1820; --p2: #6cc6ee; --p2-suave: #0f2b38;
+    --c-d: #7fa6ff; --c-s: #ff7a7a; --c-eq: #ffb347; --c-cmg: #b89bff; --c-ctme: #45d0d8; --c-cvme: #6fd88a; --c-cfme: #a7adb5; --c-x: #ff7fb8;
+    --sombra: 0 1px 0 rgba(0, 0, 0, .3), 0 14px 30px -18px rgba(0, 0, 0, .8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --fondo: #121916; --superficie: #19211d; --superficie-2: #232e28; --tinta: #e8ece7; --tinta-2: #c6cdc7; --tenue: #96a29a; --linea: #2d3a33;
+  --ok: #55c98f; --ok-suave: #15291f; --aviso: #f0b552; --aviso-suave: #2e2513; --error: #ff7f86; --error-suave: #33181b;
+  --codigo-fondo: #0d1210; --codigo-tinta: #dfe5e0; --sobre-acento: #121916;
+  --tok-c: #8e94ad; --tok-s: #6fd3a0; --tok-k: #b69bff; --tok-t: #7cc3f0; --tok-n: #f5a46b; --tok-a: #e6c066;
+  --p1: #ff8a9c; --p1-suave: #3a1820; --p2: #6cc6ee; --p2-suave: #0f2b38;
+  --c-d: #7fa6ff; --c-s: #ff7a7a; --c-eq: #ffb347; --c-cmg: #b89bff; --c-ctme: #45d0d8; --c-cvme: #6fd88a; --c-cfme: #a7adb5; --c-x: #ff7fb8;
+  --sombra: 0 1px 0 rgba(0, 0, 0, .3), 0 14px 30px -18px rgba(0, 0, 0, .8);
+  color-scheme: dark;
+}
+
+/* El acento sigue al parcial: el de la página (body) o el de cada bloque (data-u) */
+body[data-unit='p2'], [data-u='p2'] { --acento: var(--p2); --acento-suave: var(--p2-suave); --acento-tinta: var(--p2); }
+[data-u='p1'] { --acento: var(--p1); --acento-suave: var(--p1-suave); --acento-tinta: var(--p1); }
+[data-u] { --u: var(--acento); --u-suave: var(--acento-suave); }
+
+@media (min-width: 768px) { :root { --margen: 32px; } }
+@media (min-width: 1024px) { :root { --margen: 48px; } }
