@@ -7,6 +7,7 @@ Guía de estudio de **Matemática Superior 2026 (UTN-FRT, Ingeniería en Sistema
 - **Parciales resueltos** (`#/parciales`): 8 parciales reales (5 del primero y 3 del segundo, 2024-2025), 71 ítems resueltos con su teoría y un ranking de lo que más se repite.
 - **Teoría a fondo**: una lección nueva por unidad basada en Chapra y Canale (5ª ed.) y Burden (10ª ed.): ecuación característica, alcance de Laplace, problema de valor inicial, invariancia en el tiempo, error local y global y elección de h, errores y cifras significativas, orden de convergencia, unicidad y error de interpolación, criterios de regresión y ortogonalidad de Fourier.
 - 39 lecciones, 35 laboratorios (plano complejo, la transformada como área, respuesta al escalón, Euler/Heun/RK paso a paso, raíces iteración por iteración, carrera de métodos, interpolación, regresión y sumas de Fourier), 193 preguntas, simulacro por parcial, repaso de falladas, taller de gráficas y hoja de fórmulas.
+- **Resúmenes de Juana Vicente** (`#/apuntes`): la teoría de cada parcial en PDF, en `apuntes/`.
 - Las tablas de iteraciones de las soluciones (TP 5, 6, 7 y 8) se calculan en la página con el mismo código que los laboratorios y los mismos valores iniciales que la clase. Las soluciones simbólicas (TP 2, 3, 4 y 9) se verificaron con SymPy.
 
 Sitio en GitHub Pages: [franco704.github.io/iterando-ando](https://franco704.github.io/iterando-ando/)
@@ -61,5 +62,7 @@ Los ids de las lecciones y el orden de sus preguntas son los que guardan el prog
 - [Economizar](https://franco704.github.io/economizar/): Economía ([repositorio](https://github.com/Franco704/economizar))
 
 ## Agradecimientos
+
+A **Juana Vicente**, que compartió sus resúmenes teóricos del primer y del segundo parcial.
 
 A **Mateo Rusconi**, autor original de las animaciones que esta guía hereda de Backeando Ando: la pantalla de entrada a cada tema, los glifos animados de las lecciones y los microefectos de los cuestionarios vienen de su "Laboratorio Frontend DSW".

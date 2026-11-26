@@ -18,6 +18,7 @@ const HERRAMIENTAS = [
   ['#/parciales', 'Parciales', 'parciales'],
   ['#/graficas', 'Gráficas', 'graficas'],
   ['#/formulas', 'Fórmulas', 'formulas'],
+  ['#/apuntes', 'Apuntes', 'apuntes'],
   ['#/simulacro', 'Simulacro', 'simulacro'],
   ['#/repaso', 'Repasar', 'repasar'],
 ];

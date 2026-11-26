@@ -7,7 +7,7 @@ import { montarArmazon, pintarIndice, cerrarMenu, enfocarBusqueda } from './ui/a
 import { vistaInicio } from './vistas/inicio.js';
 import { vistaLeccion } from './vistas/leccion.js';
 import { vistaCuestionarioModulo, vistaSimulacro, vistaRepaso } from './vistas/cuestionarios.js';
-import { vistaParciales, vistaFormulas, vistaGraficas } from './vistas/recursos.js';
+import { vistaParciales, vistaFormulas, vistaGraficas, vistaApuntes } from './vistas/recursos.js';
 
 const main = $('#principal');
 montarArmazon();
@@ -31,6 +31,7 @@ async function resolver() {
   else if (raiz === 'parciales') vistaParciales(main);
   else if (raiz === 'formulas') vistaFormulas(main);
   else if (raiz === 'graficas') vistaGraficas(main);
+  else if (raiz === 'apuntes') vistaApuntes(main);
   else limpiar = vistaInicio(main);
   document.body.dataset.view = idx !== -1 ? 'leccion' : main.querySelector('.inicio') ? 'inicio' : raiz;
   pintarIndice();

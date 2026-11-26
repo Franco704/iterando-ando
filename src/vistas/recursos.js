@@ -1,4 +1,4 @@
-// Recursos para el parcial: parciales reales resueltos, hoja de fórmulas y taller de gráficas.
+// Recursos para el parcial: parciales reales resueltos, hoja de fórmulas, taller de gráficas y apuntes compartidos.
 import { $, irA } from '../nucleo/dom.js';
 import { PARCIALES, MODULOS, LECCIONES, EXAMENES, EJERCICIOS, FORMULAS, examenPorId, modulo, leccionesDe } from '../temario/indice.js';
 import { montarLaboratorio, DE_GRAFICAS } from '../laboratorios/indice.js';
@@ -72,4 +72,21 @@ export function vistaGraficas(main) {
     </article>`;
   main.querySelectorAll('[data-g]').forEach((el) => montarLaboratorio(el, todos[+el.dataset.g].c));
   activarSaltos(main);
+}
+
+// Apuntes en PDF que compartieron otros estudiantes (se sirven tal cual desde apuntes/)
+const APUNTES = [
+  ['apuntes/juana-vicente-resumen-primer-parcial.pdf', 'Resumen teórico: primer parcial', '23 páginas. Unidades 1 a 5: números complejos, Laplace y fracciones parciales, ecuaciones diferenciales, función de transferencia y métodos aproximados para EDO.', '1,1 MB'],
+  ['apuntes/juana-vicente-resumen-segundo-parcial.pdf', 'Resumen teórico: segundo parcial', '19 páginas. Unidades 6 a 9: raíces de ecuaciones, interpolación, regresión lineal y series de Fourier.', '1,3 MB'],
+];
+
+export function vistaApuntes(main) {
+  document.title = 'Apuntes, Iterando Ando';
+  main.innerHTML = `
+    <article class="lesson apuntes">
+      <h1>Resúmenes de Juana Vicente</h1>
+      <p class="tldr">Los resúmenes teóricos que armó <b>Juana Vicente</b> para los dos parciales y que compartió para esta guía. ¡Gracias, Juana!</p>
+      <p class="note warn">El alcance de cada resumen es el que dio la cátedra en su cursada: por ejemplo, el del primer parcial deja afuera Runge-Kutta. Confirmá qué entra este año; ante cualquier diferencia, valen la cátedra y las lecciones de la guía.</p>
+      <ul class="guias">${APUNTES.map(([h, t, d, peso]) => `<li><a href="${h}" target="_blank" rel="noopener"><b>${t}</b><span>${d}</span></a><a class="guia-repo" href="${h}" download>Descargar PDF (${peso})</a></li>`).join('')}</ul>
+    </article>`;
 }

@@ -94,6 +94,7 @@ export function vistaInicio(main) {
             ['#/parciales', 'parciales', 'Parciales resueltos', 'Ítem por ítem, con lo que más se repite y qué temas pesan más.'],
             ['#/graficas', 'graficas', 'Taller de gráficas', 'El plano complejo, Laplace, las iteraciones, interpolación, regresión y Fourier.'],
             ['#/formulas', 'formulas', 'Fórmulas', 'Todo lo que hay que saber calcular, tema por tema.'],
+            ['#/apuntes', 'apuntes', 'Resúmenes de Juana Vicente', 'La teoría de cada parcial en PDF, con el alcance que dio la cátedra.'],
             ['#/simulacro', 'simulacro', 'Simulacro', 'Veinte preguntas de un parcial, corregidas al final.'],
             ['#/repaso', 'repasar', 'Repasar', 'Las preguntas que fallaste, hasta que las aciertes.'],
           ].map(([h, i, t, d]) => `<li><a href="${h}">${icono(i, 22)}<span><b>${t}</b>${d}</span></a></li>`).join('')}
