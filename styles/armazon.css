@@ -140,3 +140,7 @@ main:focus { outline: none; }
 }
 /* La interfaz va en la grotesca; la serif queda para leer */
 .barra, .cajon, .dock, .riel, .saltar, .contador { font-family: var(--f-ui); }
+
+/* Vuelta al hub con las guías de todas las materias */
+.hub { margin-top: auto; padding: 12px 14px; border: 1px solid var(--linea); border-radius: var(--r-2); color: var(--tinta); font-size: .92rem; font-weight: 600; text-decoration: none; }
+.hub:hover { border-color: var(--acento); }
