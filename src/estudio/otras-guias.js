@@ -2,9 +2,11 @@
 export const OTRAS_GUIAS = [
   { anio: '2.º año', guias: [
     ['Integrando Ando', 'Análisis Matemático II: límites, derivadas e integrales múltiples, en 3D', 'integrando-ando'],
-    ['Operando Ando', 'Sistemas Operativos: procesos, planificación, memoria, archivos', 'operando-ando'],
+    ['Operando Ando', 'Sistemas Operativos: procesos, planificación, memoria y archivos', 'operando-ando'],
+    ['Induciendo Ando', 'Física II: campos, circuitos, inducción, ondas y calor, con simuladores', 'induciendo-ando'],
   ] },
   { anio: '3.er año', guias: [
+    ['Consultando Ando', 'Gestión de Datos: modelado, normalización y SQL en el navegador', 'consultando-ando'],
     ['Backeando Ando', 'Desarrollo de software backend: C#, ASP.NET, EF Core', 'backeando-ando'],
     ['Fronteando Ando', 'Desarrollo frontend: HTML, CSS, JavaScript, React', 'fronteando-ando'],
     ['Diseñando Ando', 'Diseño de Sistemas de Información: UML, GRASP, GoF', 'disenando-ando'],
